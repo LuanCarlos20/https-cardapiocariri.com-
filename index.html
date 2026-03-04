@@ -24,7 +24,6 @@
         }
         .animate-pulse-green { animation: pulse-green 2s infinite; }
         .animate-pulse-red { animation: pulse-red 2s infinite; }
-
         .payment-btn.active { background-color: #c2410c; color: white; border-color: #c2410c; }
     </style>
 </head>
@@ -88,7 +87,9 @@
                     <option value="Malvinas" data-fee="4.00">Malvinas (R$ 4,00)</option>
                     <option value="Outros" data-fee="6.00">Outros (R$ 6,00)</option>
                 </select>
-                <div class="flex justify-between font-bold text-lg text-orange-800 border-t pt-2 mt-2"><span>Total:</span> <span id="summary-total">R$ 0,00</span></div>
+                <div class="flex justify-between font-bold text-lg text-orange-800 border-t pt-2 mt-2">
+                    <span>Total:</span> <span id="summary-total">R$ 0,00</span>
+                </div>
             </div>
 
             <div class="space-y-4">
@@ -98,8 +99,22 @@
                     <button onclick="setPayment('Cartão')" id="pay-Cartao" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all">Cartão</button>
                     <button onclick="setPayment('Dinheiro')" id="pay-Dinheiro" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all">Dinheiro</button>
                 </div>
+
+                <div id="troco-container" class="hidden text-left">
+                    <label class="text-xs font-bold text-stone-500 ml-1">Troco para quanto?</label>
+                    <input type="number" id="valor-troco" placeholder="Ex: 50" class="w-full border rounded-xl p-3 mt-1">
+                </div>
+
+                <div id="cartao-container" class="hidden text-left">
+                    <label class="text-xs font-bold text-stone-500 ml-1">Tipo de Cartão:</label>
+                    <select id="tipo-cartao" class="w-full border rounded-xl p-3 mt-1 bg-white">
+                        <option value="Débito">Débito</option>
+                        <option value="Crédito">Crédito</option>
+                    </select>
+                </div>
+
                 <input type="text" id="cust-name" placeholder="Seu Nome" class="w-full border rounded-xl p-3">
-                <input type="text" id="cust-address" placeholder="Endereço Completo" class="w-full border rounded-xl p-3">
+                <input type="text" id="cust-address" placeholder="Endereço Completo (Rua, Nº, Ref)" class="w-full border rounded-xl p-3">
                 <button onclick="sendOrder()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl text-lg shadow-lg">Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i></button>
             </div>
         </div>
@@ -112,11 +127,9 @@
         let cart = [];
         let paymentMethod = "";
 
-        // Gerar 100 Pizzas
+        // Gerar Dados de Exemplo
         for(let i=1; i<=100; i++) PRODUCTS.push({ id: i, cat: 'pizzas', name: `Pizza ${i}`, price: 45.00, desc: "Ingredientes selecionados.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" });
-        // Gerar 100 Esfirras
         for(let i=101; i<=200; i++) PRODUCTS.push({ id: i, cat: 'esfirras', name: `Esfirra ${i-100}`, price: 6.00, desc: "Massa fofinha.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" });
-        // Bebidas
         for(let i=201; i<=250; i++) PRODUCTS.push({ id: i, cat: 'bebidas', name: `Bebida ${i-200}`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" });
 
         function shareMenu() {
@@ -142,7 +155,6 @@
 
         function addToCart(id) {
             const p = PRODUCTS.find(x => x.id === id);
-            // Se for pizza, o item ganha a propriedade de adicional vazia
             cart.push({...p, extra: "Sem Borda Recheada", extraPrice: 0});
             updateCartUI();
         }
@@ -163,7 +175,16 @@
 
         function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
         function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
-        function setPayment(m) { paymentMethod = m; document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active')); document.getElementById(`pay-${m}`).classList.add('active'); }
+
+        function setPayment(m) { 
+            paymentMethod = m; 
+            document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active')); 
+            document.getElementById(`pay-${m}`).classList.add('active'); 
+
+            // Mostrar/Ocultar campos extras
+            document.getElementById('troco-container').classList.toggle('hidden', m !== 'Dinheiro');
+            document.getElementById('cartao-container').classList.toggle('hidden', m !== 'Cartão');
+        }
 
         function updateCartUI() {
             const d = document.getElementById('delivery-location');
@@ -196,17 +217,38 @@
             const d = document.getElementById('delivery-location');
             const n = document.getElementById('cust-name').value;
             const a = document.getElementById('cust-address').value;
-            if(!cart.length || d.value === "0" || !paymentMethod || !n) return alert("Preencha todos os dados!");
+            
+            if(!cart.length || d.value === "0" || !paymentMethod || !n) {
+                return alert("Por favor, preencha o Nome, Bairro e Forma de Pagamento!");
+            }
             
             const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
             const total = cart.reduce((acc, cur) => acc + cur.price + (cur.extraPrice || 0), 0) + fee;
             
-            let msg = `*PEDIDO - ${STORE_NAME}*\n\n*Cliente:* ${n}\n*Endereço:* ${a}\n*Pagamento:* ${paymentMethod}\n\n*ITENS:*\n`;
+            // Lógica de detalhes do pagamento
+            let detPagamento = paymentMethod;
+            if(paymentMethod === 'Dinheiro') {
+                const troco = document.getElementById('valor-troco').value;
+                detPagamento += troco ? ` (Troco para R$ ${troco})` : " (Não precisa de troco)";
+            } else if(paymentMethod === 'Cartão') {
+                const tipo = document.getElementById('tipo-cartao').value;
+                detPagamento += ` (${tipo})`;
+            }
+
+            let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
+            msg += `*Cliente:* ${n}\n`;
+            msg += `*Endereço:* ${a}\n`;
+            msg += `*Bairro:* ${d.value}\n`;
+            msg += `*Pagamento:* ${detPagamento}\n\n`;
+            msg += `*ITENS:*\n`;
+            
             cart.forEach(i => {
                 msg += `• ${i.name} (R$ ${i.price.toFixed(2)})\n`;
                 if(i.extraPrice > 0) msg += `  └ _Adicional: ${i.extra}_ (+R$${i.extraPrice.toFixed(2)})\n`;
             });
-            msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n*TOTAL: R$ ${total.toFixed(2)}*`;
+
+            msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n`;
+            msg += `*TOTAL: R$ ${total.toFixed(2)}*`;
             
             window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
         }
