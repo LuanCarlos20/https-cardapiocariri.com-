@@ -12,16 +12,16 @@
         h1, h2, .font-serif { font-family: 'Playfair Display', serif; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
 
-        /* Animações de Piscar (Pulse) */
+        /* Animações de Piscar (Pulse) para o Status */
         @keyframes pulse-green {
-            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
-            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
-            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(22, 163, 74, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
         }
         @keyframes pulse-red {
-            0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
-            70% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
-            100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
         .animate-pulse-green { animation: pulse-green 2s infinite; }
         .animate-pulse-red { animation: pulse-red 2s infinite; }
@@ -39,21 +39,27 @@
 <body class="bg-stone-50 text-stone-900 pb-24">
 
     <header class="w-full h-[260px] bg-[url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=1000')] bg-cover bg-center relative">
+        
+        <div class="absolute top-4 left-4 flex gap-2 z-10">
+            <a href="https://www.instagram.com/pizzaria_a_portuguesa/" target="_blank" class="bg-white/20 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/40 transition-all shadow-lg border border-white/30">
+                <i class="fab fa-instagram text-lg"></i>
+            </a>
+            <a href="https://maps.app.goo.gl/exemplo" target="_blank" class="bg-white/20 text-white w-9 h-9 rounded-full flex items-center justify-center backdrop-blur-sm hover:bg-white/40 transition-all shadow-lg border border-white/30">
+                <i class="fas fa-map-marker-alt text-lg"></i>
+            </a>
+        </div>
+
         <button onclick="shareMenu()" class="absolute top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-green-700 transition-all z-10 shadow-lg">
             <i class="fab fa-whatsapp"></i> Compartilhar
         </button>
 
-        <div class="absolute inset-0 bg-black/50 flex flex-col items-start justify-center text-left p-8">
-            <img src="https://matafoomi.com.br/images/template/d311c8036e92213f64f1b35b92d1e2b4815c8ffa.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-xl mb-4">
-            <h1 class="text-white text-3xl font-serif font-bold">Pizzaria A Portuguesa</h1>
-            
-            <div id="status-loja" class="mt-3 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all">
+        <div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center p-4">
+            <img src="https://matafoomi.com.br/images/template/d311c8036e92213f64f1b35b92d1e2b4815c8ffa.jpg" alt="Logo" class="w-20 h-20 rounded-full object-cover border-2 border-white shadow-xl mb-2">
+            <h1 class="text-white text-2xl font-serif font-bold">Pizzaria A Portuguesa</h1>
+            <div id="status-loja" class="mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all">
                 <i class="fa fa-clock"></i> <span id="status-texto">Verificando...</span>
             </div>
-            
-            <p class="text-white/80 text-[12px] mt-3 font-medium tracking-wide">
-                Dom a Seg: 16h às 00h • <span class="text-red-300 font-bold">Terça: Fechado</span>
-            </p>
+            <p class="text-white/80 text-[11px] mt-2 font-medium tracking-wide">Dom a Seg: 16h às 00h • <span class="text-red-300 font-bold">Terça: Fechado</span></p>
         </div>
     </header>
 
@@ -64,11 +70,11 @@
         <button onclick="filterCategory('bebidas')" class="px-5 py-2 rounded-full bg-stone-100 text-sm hover:bg-orange-100 transition font-medium">Bebidas</button>
     </nav>
 
-    <div class="max-w-6xl mx-auto px-4 mt-4">
+    <div class="max-w-6xl mx-auto px-4 mt-4 relative z-0">
         <div class="relative">
             <input type="text" id="search-input" oninput="searchProduct()" placeholder="Buscar no cardápio..." 
-                   class="w-full bg-white border border-stone-200 rounded-2xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-orange-500 transition-all shadow-sm">
-            <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-stone-400"></i>
+                   class="w-full bg-white border border-stone-200 rounded-2xl py-3.5 pl-11 pr-4 outline-none focus:ring-2 focus:ring-orange-500 transition-all shadow-sm relative z-10">
+            <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 z-20"></i>
         </div>
     </div>
 
@@ -77,7 +83,7 @@
     <div id="pizza-modal" class="fixed inset-0 bg-black/70 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white w-full max-w-lg rounded-2xl max-h-[90vh] overflow-hidden flex flex-col relative">
             <div class="p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
-                <h2 id="modal-pizza-title" class="font-bold text-lg uppercase">ITEM</h2>
+                <h2 id="modal-pizza-title" class="font-bold text-lg uppercase text-left">ITEM</h2>
                 <button onclick="closePizzaModal()" class="bg-red-500 text-white w-8 h-8 rounded-md text-xl font-bold">&times;</button>
             </div>
             <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
