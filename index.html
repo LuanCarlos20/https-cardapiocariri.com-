@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #fcfaf8; }
+        body { font-family: 'Inter', sans-serif; }
         h1, h2, .font-serif { font-family: 'Playfair Display', serif; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
 
@@ -25,11 +25,14 @@
         .animate-pulse-green { animation: pulse-green 2s infinite; }
         .animate-pulse-red { animation: pulse-red 2s infinite; }
         
-        .payment-btn.active { background-color: #c2410c !important; color: white !important; border-color: #c2410c !important; }
-        .selected-flavor { border-color: #c2410c !important; background-color: #fff7ed !important; box-shadow: inset 0 0 0 1px #c2410c; }
+        .payment-btn.active { 
+            background-color: #c2410c !important; 
+            color: white !important; 
+            border-color: #c2410c !important; 
+        }
     </style>
 </head>
-<body class="pb-24 text-stone-900">
+<body class="bg-stone-50 text-stone-900 pb-24">
 
     <header class="w-full h-[260px] bg-[url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&q=80&w=1000')] bg-cover bg-center relative">
         <button onclick="shareMenu()" class="absolute top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 hover:bg-green-700 transition-all z-10 shadow-lg">
@@ -63,25 +66,9 @@
 
     <main class="max-w-6xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2" id="menu-container"></main>
 
-    <div id="modal-sabores" class="fixed inset-0 bg-black/70 z-[65] hidden flex items-end sm:items-center justify-center backdrop-blur-sm">
-        <div class="bg-white w-full max-w-lg h-[85vh] rounded-t-3xl sm:rounded-3xl flex flex-col overflow-hidden">
-            <div class="p-4 border-b flex justify-between items-center">
-                <h2 id="modal-titulo-pizza" class="font-bold text-lg">Sabores</h2>
-                <button onclick="closePizzaModal()" class="text-3xl">&times;</button>
-            </div>
-            <div id="lista-sabores-pizza" class="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-hide"></div>
-            <div class="p-4 bg-stone-50 border-t space-y-3">
-                <p class="text-[10px] font-bold text-stone-500 uppercase">Borda Recheada:</p>
-                <div class="grid grid-cols-2 gap-2" id="bordas-pizza"></div>
-                <textarea id="obs-pizza" placeholder="Observações..." class="w-full border rounded-xl p-3 text-sm outline-none focus:ring-1 focus:ring-orange-500"></textarea>
-                <button onclick="addPizzaToCart()" class="w-full bg-orange-700 text-white font-bold py-4 rounded-2xl shadow-lg">Adicionar Pizza</button>
-            </div>
-        </div>
-    </div>
-
     <footer class="fixed bottom-0 w-full bg-white border-t border-stone-200 p-4 flex items-center justify-between z-50">
         <div class="flex flex-col text-left">
-            <span class="text-[10px] text-stone-500 uppercase font-bold tracking-widest">Total com Entrega</span>
+            <span class="text-[10px] text-stone-500 uppercase font-bold tracking-widest">Total + Entrega</span>
             <span class="text-xl font-bold text-orange-800" id="cart-total">R$ 0,00</span>
         </div>
         <button onclick="toggleModal(true)" class="bg-orange-700 hover:bg-orange-800 text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg">
@@ -90,15 +77,16 @@
     </footer>
 
     <div id="cart-modal" class="fixed inset-0 bg-black/70 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-lg rounded-3xl max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl">
+        <div class="bg-white w-full max-w-lg rounded-3xl max-h-[90vh] overflow-y-auto p-6 relative">
             <button onclick="toggleModal(false)" class="absolute top-4 right-4 text-stone-400 text-3xl">&times;</button>
-            <h2 class="text-2xl font-serif font-bold mb-6 border-b pb-4 text-stone-800 text-left">Meu Pedido</h2>
-            <div id="cart-items" class="space-y-4 mb-6"></div>
+            <h2 class="text-2xl font-serif font-bold mb-6 border-b pb-4 text-stone-800">Meu Pedido</h2>
             
+            <div id="cart-items" class="space-y-4 mb-6"></div>
+
             <div class="mb-6 bg-stone-50 p-4 rounded-2xl border border-stone-200 text-sm text-left">
-                <label class="font-bold mb-2 block text-stone-700">Selecione o Bairro (Entrega):</label>
+                <label class="font-bold mb-2 block text-stone-700">Bairro para Entrega:</label>
                 <select id="delivery-location" onchange="updateCartUI()" class="w-full rounded-xl p-3 bg-white border mb-3 outline-orange-500">
-                    <option value="0" data-fee="0">Selecione o bairro...</option>
+                    <option value="0" data-fee="0">Selecione seu bairro...</option>
                     <option value="Centro" data-fee="3.00">Centro (R$ 3,00)</option>
                     <option value="Cirolândia" data-fee="3.50">Cirolândia (R$ 3,50)</option>
                     <option value="Malvinas" data-fee="4.00">Malvinas (R$ 4,00)</option>
@@ -110,22 +98,29 @@
             </div>
 
             <div class="space-y-4">
+                <p class="text-sm font-bold text-left text-stone-700">Forma de Pagamento:</p>
                 <div class="grid grid-cols-3 gap-2">
                     <button type="button" onclick="setPayment('Pix')" id="pay-Pix" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Pix</button>
                     <button type="button" onclick="setPayment('Cartao')" id="pay-Cartao" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Cartão</button>
                     <button type="button" onclick="setPayment('Dinheiro')" id="pay-Dinheiro" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Dinheiro</button>
                 </div>
+
                 <div id="troco-container" class="hidden text-left bg-orange-50 p-3 rounded-xl border border-orange-100">
-                    <input type="number" id="valor-troco" placeholder="Troco para quanto?" class="w-full border rounded-xl p-3 outline-orange-500">
+                    <label class="text-xs font-bold text-orange-800 ml-1">Precisa de troco para quanto?</label>
+                    <input type="number" id="valor-troco" placeholder="Ex: 100" class="w-full border rounded-xl p-3 mt-1 outline-orange-500">
                 </div>
+
                 <div id="cartao-container" class="hidden text-left bg-orange-50 p-3 rounded-xl border border-orange-100">
-                    <select id="tipo-cartao" class="w-full border rounded-xl p-3 bg-white outline-orange-500">
+                    <label class="text-xs font-bold text-orange-800 ml-1">Qual o tipo do cartão?</label>
+                    <select id="tipo-cartao" class="w-full border rounded-xl p-3 mt-1 bg-white outline-orange-500">
                         <option value="Débito">Débito</option>
                         <option value="Crédito">Crédito</option>
                     </select>
                 </div>
+
                 <input type="text" id="cust-name" placeholder="Seu Nome" class="w-full border rounded-xl p-3 outline-orange-500">
-                <input type="text" id="cust-address" placeholder="Endereço e Referência" class="w-full border rounded-xl p-3 outline-orange-500">
+                <input type="text" id="cust-address" placeholder="Endereço (Rua, Número, Referência)" class="w-full border rounded-xl p-3 outline-orange-500">
+                
                 <button onclick="sendOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg transition-colors mt-2">
                     Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i>
                 </button>
@@ -136,176 +131,125 @@
     <script>
         const WHATSAPP_NUMBER = "5588992791644";
         const STORE_NAME = "Pizzaria A Portuguesa";
+        const PRODUCTS = [];
         let cart = [];
         let paymentMethod = "";
 
-        // BASE DE DADOS
-        const SABORES_PIZZA = [
-            { id: 1, nome: "Americana", preco: 36, desc: "Presunto, mussarela, ovos e bacon." },
-            { id: 2, nome: "Atum", preco: 31, desc: "Atum ralado e cebola." },
-            { id: 3, nome: "Bacon", preco: 33, desc: "Mussarela e bacon crocante." },
-            { id: 10, nome: "Calabresa c/ Mussarela", preco: 33, desc: "Calabresa fatiada e mussarela." },
-            { id: 17, nome: "Frango c/ Catupiry", preco: 33, desc: "Frango desfiado com catupiry." },
-            { id: 38, nome: "Portuguesa", preco: 36, desc: "Ovos, cebola, ervilha, presunto e mussarela." }
-        ];
+        // Dados originais
+        for(let i=1; i<=100; i++) PRODUCTS.push({ id: i, cat: 'pizzas', name: `Pizza ${i}`, price: 45.00, desc: "Ingredientes selecionados.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" });
+        for(let i=101; i<=200; i++) PRODUCTS.push({ id: i, cat: 'esfirras', name: `Esfirra ${i-100}`, price: 6.00, desc: "Massa fofinha.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" });
+        for(let i=201; i<=250; i++) PRODUCTS.push({ id: i, cat: 'bebidas', name: `Bebida ${i-200}`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" });
 
-        const BORDAS = [
-            { nome: "Sem Borda", preco: 0 },
-            { nome: "Cheddar", preco: 7 },
-            { nome: "Catupiry", preco: 7 },
-            { nome: "Chocolate", preco: 8 }
-        ];
-
-        const OUTROS_PRODUTOS = [
-            { id: 101, cat: 'esfirras', name: "Esfirra de Carne", price: 6.00, desc: "Massa fofinha.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" },
-            { id: 102, cat: 'esfirras', name: "Esfirra de Frango", price: 6.00, desc: "Frango bem temperado.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" },
-            { id: 201, cat: 'bebidas', name: "Coca-Cola 2L", price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" },
-            { id: 202, cat: 'bebidas', name: "Guaraná 2L", price: 10.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" }
-        ];
-
-        let curSize = "";
-        let curFlavors = [];
-        let curBorder = BORDAS[0];
-
-        // RENDERIZAÇÃO DO MENU
-        function renderMenu(cat = 'todas') {
+        function renderMenu(items = PRODUCTS) {
             const container = document.getElementById('menu-container');
-            container.innerHTML = "";
-
-            if(cat === 'todas' || cat === 'pizzas') {
-                const sizes = [
-                    { t: 'P', d: '4 Fatias • Até 2 sabores' },
-                    { t: 'M', d: '6 Fatias • Até 2 sabores' },
-                    { t: 'G', d: '8 Fatias • Até 2 sabores' }
-                ];
-                sizes.forEach(sz => {
-                    container.innerHTML += `
-                    <div onclick="openPizzaModal('${sz.t}')" class="bg-white p-5 rounded-2xl shadow-sm border flex justify-between items-center cursor-pointer hover:border-orange-500 transition-all active:scale-95">
-                        <div class="text-left"><h3 class="font-bold text-lg">Pizza Pequena (${sz.t})</h3><p class="text-xs text-stone-500">${sz.d}</p></div>
-                        <i class="fa fa-chevron-right text-orange-700"></i>
-                    </div>`;
-                });
-            }
-
-            const filtered = cat === 'todas' ? OUTROS_PRODUTOS : OUTROS_PRODUTOS.filter(p => p.cat === cat);
-            container.innerHTML += filtered.map(p => `
+            container.innerHTML = items.map(p => `
                 <div class="bg-white p-3 rounded-2xl shadow-sm border flex gap-4 items-center">
                     <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover">
                     <div class="flex-1 min-w-0 text-left">
                         <div class="flex justify-between items-start"><h3 class="font-bold text-sm truncate">${p.name}</h3><span class="text-orange-700 font-bold text-sm">R$ ${p.price.toFixed(2)}</span></div>
                         <p class="text-[11px] text-stone-500 mb-2">${p.desc}</p>
-                        <button onclick="addToCartDirect(${p.id})" class="w-full bg-stone-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition">Adicionar</button>
+                        <button onclick="addToCart(${p.id})" class="w-full bg-stone-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition">Adicionar</button>
                     </div>
                 </div>`).join('');
         }
 
-        // PIZZAS
-        function openPizzaModal(tam) {
-            curSize = tam; curFlavors = []; curBorder = BORDAS[0];
-            document.getElementById('modal-titulo-pizza').innerText = `Pizza ${tam} (Até 2 sabores)`;
-            document.getElementById('modal-sabores').classList.remove('hidden');
-            renderSaboresPizza();
-        }
+        function filterCategory(cat) { renderMenu(cat === 'todas' ? PRODUCTS : PRODUCTS.filter(p => p.cat === cat)); }
+        function searchProduct() { const term = document.getElementById('search-input').value.toLowerCase(); renderMenu(PRODUCTS.filter(p => p.name.toLowerCase().includes(term))); }
 
-        function renderSaboresPizza() {
-            const list = document.getElementById('lista-sabores-pizza');
-            list.innerHTML = SABORES_PIZZA.map(s => `
-                <div onclick="toggleSabor(${s.id})" class="flex justify-between items-center p-3 border rounded-xl cursor-pointer transition-all bg-white ${curFlavors.includes(s.id) ? 'selected-flavor' : ''}">
-                    <div class="text-left pr-2"><p class="font-bold text-sm">${s.nome}</p><p class="text-[10px] text-stone-500">${s.desc}</p></div>
-                    <span class="font-bold text-orange-800 text-sm">R$ ${s.preco.toFixed(2)}</span>
-                </div>`).join('');
-
-            const bList = document.getElementById('bordas-pizza');
-            bList.innerHTML = BORDAS.map((b, i) => `
-                <button onclick="setBorda(${i})" class="border p-2 rounded-xl text-[10px] font-bold ${curBorder.nome === b.name ? 'bg-orange-700 text-white' : 'bg-white'}">
-                    ${b.name} (+R$ ${b.preco})
-                </button>`).join('');
-        }
-
-        function toggleSabor(id) {
-            const idx = curFlavors.indexOf(id);
-            if (idx > -1) curFlavors.splice(idx, 1);
-            else { if (curFlavors.length >= 2) curFlavors.shift(); curFlavors.push(id); }
-            renderSaboresPizza();
-        }
-
-        function setBorda(i) { curBorder = BORDAS[i]; renderSaboresPizza(); }
-
-        function closePizzaModal() { document.getElementById('modal-sabores').classList.add('hidden'); }
-
-        function addPizzaToCart() {
-            if (!curFlavors.length) return alert("Escolha o sabor!");
-            const itens = curFlavors.map(id => SABORES_PIZZA.find(s => s.id === id));
-            const precoMax = Math.max(...itens.map(i => i.preco));
-            const nomeFinal = itens.length === 1 ? `Pizza ${curSize} ${itens[0].nome}` : `Pizza ${curSize} (1/2 ${itens[0].nome} + 1/2 ${itens[1].nome})`;
-            cart.push({ name: nomeFinal, price: precoMax + curBorder.preco, extra: curBorder.nome, obs: document.getElementById('obs-pizza').value });
-            closePizzaModal(); updateCartUI();
-        }
-
-        // GERAL
-        function addToCartDirect(id) {
-            const p = OUTROS_PRODUTOS.find(x => x.id === id);
-            cart.push({...p});
+        function addToCart(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            cart.push({...p, extra: "Sem Borda Recheada", extraPrice: 0});
             updateCartUI();
         }
 
-        function updateCartUI() {
-            const d = document.getElementById('delivery-location');
-            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee') || 0);
-            const subtotal = cart.reduce((a, c) => a + c.price, 0);
-            const total = subtotal + fee;
-
-            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
-            document.getElementById('summary-total').innerText = `R$ ${total.toFixed(2)}`;
-            
-            document.getElementById('cart-items').innerHTML = cart.map((item, i) => `
-                <div class="bg-stone-50 p-3 rounded-xl border flex justify-between items-center text-left">
-                    <div><p class="font-bold text-sm">${item.name}</p>
-                    <p class="text-[10px] text-stone-500">${item.extra ? 'Borda: '+item.extra : ''} ${item.obs ? '| '+item.obs : ''}</p>
-                    <p class="text-xs font-bold text-orange-800">R$ ${item.price.toFixed(2)}</p></div>
-                    <button onclick="cart.splice(${i}, 1); updateCartUI();" class="text-red-400 p-2"><i class="fa fa-trash"></i></button>
-                </div>`).join('');
+        function setExtra(index, type) {
+            if(type === 'catupiry') { cart[index].extra = "Borda Catupiry"; cart[index].extraPrice = 7.00; } 
+            else if(type === 'cheddar') { cart[index].extra = "Borda Cheddar"; cart[index].extraPrice = 7.00; } 
+            else { cart[index].extra = "Sem Borda Recheada"; cart[index].extraPrice = 0; }
+            updateCartUI();
         }
 
-        function sendOrder() {
-            const d = document.getElementById('delivery-location'), n = document.getElementById('cust-name').value, a = document.getElementById('cust-address').value;
-            if(d.value === "0" || !cart.length || !paymentMethod || !n || !a) return alert("Preencha todos os campos!");
-            
-            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee') || 0);
-            const subtotal = cart.reduce((acc, cur) => acc + cur.price, 0);
-            const totalFinal = subtotal + fee;
-
-            let msg = `*PEDIDO - ${STORE_NAME}*\n\n👤 *Cliente:* ${n}\n📍 *Endereço:* ${a}\n🏘️ *Bairro:* ${d.value}\n💳 *Pagamento:* ${paymentMethod}\n\n🛒 *ITENS:*\n`;
-            cart.forEach(i => msg += `• ${i.name} (R$ ${i.price.toFixed(2)})\n${i.extra ? '  └ Borda: '+i.extra+'\n' : ''}`);
-            msg += `\n*Subtotal:* R$ ${subtotal.toFixed(2)}\n*Entrega:* R$ ${fee.toFixed(2)}\n*TOTAL: R$ ${totalFinal.toFixed(2)}*`;
-            
-            window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
-        }
+        function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
+        function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
 
         function setPayment(m) { 
-            paymentMethod = m; document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`pay-${m}`).classList.add('active');
+            paymentMethod = m; 
+            document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`pay-${m}`).classList.add('active'); 
             document.getElementById('troco-container').classList.toggle('hidden', m !== 'Dinheiro');
             document.getElementById('cartao-container').classList.toggle('hidden', m !== 'Cartao');
         }
 
-        function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
-        function filterCategory(cat) { renderMenu(cat); }
-        function searchProduct() {
-            const term = document.getElementById('search-input').value.toLowerCase();
-            const filtered = OUTROS_PRODUTOS.filter(p => p.name.toLowerCase().includes(term));
-            const container = document.getElementById('menu-container');
-            container.innerHTML = filtered.map(p => `
-                <div class="bg-white p-3 rounded-2xl shadow-sm border flex gap-4 items-center">
-                    <img src="${p.img}" class="w-24 h-24 rounded-xl object-cover">
-                    <div class="flex-1 min-w-0 text-left">
-                        <div class="flex justify-between items-start"><h3 class="font-bold text-sm truncate">${p.name}</h3><span class="text-orange-700 font-bold text-sm">R$ ${p.price.toFixed(2)}</span></div>
-                        <p class="text-[11px] text-stone-500 mb-2">${p.desc}</p>
-                        <button onclick="addToCartDirect(${p.id})" class="w-full bg-stone-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition">Adicionar</button>
+        // CORREÇÃO: Função unificada de cálculo de total
+        function updateCartUI() {
+            const d = document.getElementById('delivery-location');
+            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee') || 0);
+            const totalItems = cart.reduce((a, c) => a + c.price + (c.extraPrice || 0), 0);
+            const totalFinal = totalItems + fee;
+
+            document.getElementById('cart-total').innerText = `R$ ${totalFinal.toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `R$ ${totalFinal.toFixed(2)}`;
+            
+            document.getElementById('cart-items').innerHTML = cart.map((item, i) => `
+                <div class="bg-stone-50 p-3 rounded-xl border mb-3 text-left">
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <p class="font-bold text-sm">${item.name}</p>
+                            <p class="text-xs text-stone-500">R$ ${(item.price + item.extraPrice).toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeItem(${i})" class="text-red-400 p-2"><i class="fa fa-trash"></i></button>
                     </div>
+                    ${item.cat === 'pizzas' ? `
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="setExtra(${i}, 'nenhum')" class="flex-1 text-[10px] border py-1 rounded-lg ${item.extraPrice === 0 ? 'bg-orange-700 text-white' : 'bg-white'}">Sem Borda</button>
+                        <button onclick="setExtra(${i}, 'catupiry')" class="flex-1 text-[10px] border py-1 rounded-lg ${item.extra === 'Borda Catupiry' ? 'bg-orange-700 text-white' : 'bg-white'}">Catupiry (+R$7)</button>
+                        <button onclick="setExtra(${i}, 'cheddar')" class="flex-1 text-[10px] border py-1 rounded-lg ${item.extra === 'Borda Cheddar' ? 'bg-orange-700 text-white' : 'bg-white'}">Cheddar (+R$7)</button>
+                    </div>
+                    ` : ''}
                 </div>`).join('');
         }
 
-        function checkStatus() {
-            const now = new Date(), h = now.getHours(), dia = now.getDay(), open = (h >= 16 && h < 24) && (dia !== 2);
-            document.getElementById('status-loja').className = `mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 ${open ? 'bg-green-600 animate-
+        // CORREÇÃO: Função de envio somando a entrega no total
+        function sendOrder() {
+            const d = document.getElementById('delivery-location'), n = document.getElementById('cust-name').value, a = document.getElementById('cust-address').value;
+            if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) return alert("Preencha todos os campos!");
+            
+            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
+            const subtotal = cart.reduce((acc, cur) => acc + cur.price + (cur.extraPrice || 0), 0);
+            const totalFinal = subtotal + fee;
+
+            let detPagamento = paymentMethod;
+            if(paymentMethod === 'Dinheiro') {
+                const troco = document.getElementById('valor-troco').value;
+                detPagamento += troco ? ` (Troco para R$ ${troco})` : " (Não precisa de troco)";
+            } else if(paymentMethod === 'Cartao') {
+                detPagamento = `Cartão (${document.getElementById('tipo-cartao').value})`;
+            }
+
+            let msg = `*PEDIDO - ${STORE_NAME}*\n\n👤 *Cliente:* ${n}\n📍 *End:* ${a}\n🏘️ *Bairro:* ${d.value}\n💳 *Pagamento:* ${detPagamento}\n\n🛒 *ITENS:*\n`;
+            cart.forEach(i => {
+                msg += `• ${i.name} (R$ ${i.price.toFixed(2)})\n`;
+                if(i.extraPrice > 0) msg += `  └ _Adicional: ${i.extra}_ (+R$${i.extraPrice.toFixed(2)})\n`;
+            });
+
+            msg += `\n*Subtotal:* R$ ${subtotal.toFixed(2)}\n`;
+            msg += `*Entrega:* R$ ${fee.toFixed(2)}\n`;
+            msg += `*TOTAL: R$ ${totalFinal.toFixed(2)}*`;
+            
+            window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
+        }
+
+        function shareMenu() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('🍕 Confira o cardápio da ' + STORE_NAME + ': ' + window.location.href)}`); }
+
+        function checkStoreStatus() {
+            const now = new Date(), h = now.getHours(), open = (h >= 16 && h < 24) && (now.getDay() !== 2);
+            const div = document.getElementById('status-loja');
+            div.className = `mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 ${open ? 'bg-green-600 animate-pulse-green' : 'bg-red-600 animate-pulse-red'}`;
+            document.getElementById('status-texto').innerText = open ? "Aberto Agora" : "Fechado Agora";
+        }
+
+        checkStoreStatus();
+        renderMenu();
+    </script>
+</body>
+</html>
