@@ -24,7 +24,6 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
 
-        /* Classes para a Logo e Status */
         .animate-pulse-green { animation: pulse-green 2s infinite; border-color: #16a34a !important; }
         .animate-pulse-red { animation: pulse-red 2s infinite; border-color: #dc2626 !important; }
         
@@ -61,7 +60,7 @@
             <div id="status-loja" class="mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 transition-all">
                 <i class="fa fa-clock"></i> <span id="status-texto">Verificando...</span>
             </div>
-            <p class="text-white/80 text-[11px] mt-2 font-medium tracking-wide">Dom a Seg: 16h às 00h • <span class="text-red-300 font-bold">Terça: Fechado</span></p>
+            <p class="text-white/80 text-[11px] mt-2 font-medium tracking-wide">Dom a Seg: 18h às 23h30 • <span class="text-red-300 font-bold">Terça: Fechado</span></p>
         </div>
     </header>
 
@@ -431,15 +430,24 @@
             window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
         }
 
-        // FUNÇÃO DE STATUS (MODIFICADA PARA A LOGO)
+        // FUNÇÃO DE STATUS ATUALIZADA (18:00 às 23:30)
         function checkStoreStatus() {
-            const now = new Date(), h = now.getHours();
-            const open = (h >= 18 && h < 24) && (now.getDay() !== 2);
+            const now = new Date();
+            const diaSemana = now.getDay(); 
+            const horas = now.getHours();
+            const minutos = now.getMinutes();
+            const tempoAtual = horas * 60 + minutos; 
+
+            const inicio = 18 * 60; // 18:00 em minutos
+            const fim = 23 * 60 + 30; // 23:30 em minutos
+
+            // Aberto se estiver no intervalo e NÃO for terça (2)
+            const aberto = (tempoAtual >= inicio && tempoAtual < fim) && (diaSemana !== 2);
             
             const div = document.getElementById('status-loja');
             const logo = document.getElementById('logo-pizzaria');
             
-            if(open) {
+            if(aberto) {
                 div.className = `mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 bg-green-600 animate-pulse-green`;
                 logo.className = `w-20 h-20 rounded-full object-cover border-4 shadow-xl mb-2 transition-all animate-pulse-green`;
                 document.getElementById('status-texto').innerText = "Aberto Agora";
@@ -457,6 +465,8 @@
 
         checkStoreStatus();
         renderMenu();
+        // Atualiza o status a cada 1 minuto automaticamente
+        setInterval(checkStoreStatus, 60000);
     </script>
 </body>
 </html>
