@@ -24,7 +24,13 @@
         }
         .animate-pulse-green { animation: pulse-green 2s infinite; }
         .animate-pulse-red { animation: pulse-red 2s infinite; }
-        .payment-btn.active { background-color: #c2410c; color: white; border-color: #c2410c; }
+        
+        /* Classe para o botão selecionado */
+        .payment-btn.active { 
+            background-color: #c2410c !important; 
+            color: white !important; 
+            border-color: #c2410c !important; 
+        }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-900 pb-24">
@@ -79,7 +85,7 @@
             <div id="cart-items" class="space-y-4 mb-6"></div>
 
             <div class="mb-6 bg-stone-50 p-4 rounded-2xl border border-stone-200 text-sm">
-                <label class="font-bold mb-2 block text-left">Local de Entrega:</label>
+                <label class="font-bold mb-2 block text-left text-stone-700">Bairro para Entrega:</label>
                 <select id="delivery-location" onchange="updateCartUI()" class="w-full rounded-xl p-3 bg-white border mb-3">
                     <option value="0" data-fee="0">Selecione seu bairro...</option>
                     <option value="Centro" data-fee="3.00">Centro (R$ 3,00)</option>
@@ -93,29 +99,32 @@
             </div>
 
             <div class="space-y-4">
-                <p class="text-sm font-bold text-left">Pagamento:</p>
+                <p class="text-sm font-bold text-left text-stone-700">Forma de Pagamento:</p>
                 <div class="grid grid-cols-3 gap-2">
-                    <button onclick="setPayment('Pix')" id="pay-Pix" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all">Pix</button>
-                    <button onclick="setPayment('Cartão')" id="pay-Cartao" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all">Cartão</button>
-                    <button onclick="setPayment('Dinheiro')" id="pay-Dinheiro" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all">Dinheiro</button>
+                    <button type="button" onclick="setPayment('Pix')" id="pay-Pix" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Pix</button>
+                    <button type="button" onclick="setPayment('Cartao')" id="pay-Cartao" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Cartão</button>
+                    <button type="button" onclick="setPayment('Dinheiro')" id="pay-Dinheiro" class="payment-btn border rounded-xl py-2 text-xs font-bold transition-all bg-white">Dinheiro</button>
                 </div>
 
-                <div id="troco-container" class="hidden text-left">
-                    <label class="text-xs font-bold text-stone-500 ml-1">Troco para quanto?</label>
-                    <input type="number" id="valor-troco" placeholder="Ex: 50" class="w-full border rounded-xl p-3 mt-1">
+                <div id="troco-container" class="hidden text-left bg-orange-50 p-3 rounded-xl border border-orange-100">
+                    <label class="text-xs font-bold text-orange-800 ml-1">Precisa de troco para quanto?</label>
+                    <input type="number" id="valor-troco" placeholder="Ex: 100" class="w-full border rounded-xl p-3 mt-1 outline-orange-500">
                 </div>
 
-                <div id="cartao-container" class="hidden text-left">
-                    <label class="text-xs font-bold text-stone-500 ml-1">Tipo de Cartão:</label>
-                    <select id="tipo-cartao" class="w-full border rounded-xl p-3 mt-1 bg-white">
+                <div id="cartao-container" class="hidden text-left bg-orange-50 p-3 rounded-xl border border-orange-100">
+                    <label class="text-xs font-bold text-orange-800 ml-1">Qual o tipo do cartão?</label>
+                    <select id="tipo-cartao" class="w-full border rounded-xl p-3 mt-1 bg-white outline-orange-500">
                         <option value="Débito">Débito</option>
                         <option value="Crédito">Crédito</option>
                     </select>
                 </div>
 
-                <input type="text" id="cust-name" placeholder="Seu Nome" class="w-full border rounded-xl p-3">
-                <input type="text" id="cust-address" placeholder="Endereço Completo (Rua, Nº, Ref)" class="w-full border rounded-xl p-3">
-                <button onclick="sendOrder()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl text-lg shadow-lg">Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i></button>
+                <input type="text" id="cust-name" placeholder="Seu Nome" class="w-full border rounded-xl p-3 outline-orange-500">
+                <input type="text" id="cust-address" placeholder="Endereço (Rua, Número, Referência)" class="w-full border rounded-xl p-3 outline-orange-500">
+                
+                <button onclick="sendOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-lg shadow-lg transition-colors mt-2">
+                    Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i>
+                </button>
             </div>
         </div>
     </div>
@@ -127,7 +136,7 @@
         let cart = [];
         let paymentMethod = "";
 
-        // Gerar Dados de Exemplo
+        // Gerar Dados (Pizza, Esfirras, Bebidas)
         for(let i=1; i<=100; i++) PRODUCTS.push({ id: i, cat: 'pizzas', name: `Pizza ${i}`, price: 45.00, desc: "Ingredientes selecionados.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" });
         for(let i=101; i<=200; i++) PRODUCTS.push({ id: i, cat: 'esfirras', name: `Esfirra ${i-100}`, price: 6.00, desc: "Massa fofinha.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" });
         for(let i=201; i<=250; i++) PRODUCTS.push({ id: i, cat: 'bebidas', name: `Bebida ${i-200}`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" });
@@ -176,14 +185,27 @@
         function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
         function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
 
+        // CORREÇÃO: Função de seleção de pagamento
         function setPayment(m) { 
             paymentMethod = m; 
-            document.querySelectorAll('.payment-btn').forEach(b => b.classList.remove('active')); 
+            
+            // Remove a classe ativa de todos
+            document.querySelectorAll('.payment-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adiciona a classe ativa no botão clicado
             document.getElementById(`pay-${m}`).classList.add('active'); 
 
-            // Mostrar/Ocultar campos extras
-            document.getElementById('troco-container').classList.toggle('hidden', m !== 'Dinheiro');
-            document.getElementById('cartao-container').classList.toggle('hidden', m !== 'Cartão');
+            // Controla a visibilidade dos campos extras
+            document.getElementById('troco-container').classList.add('hidden');
+            document.getElementById('cartao-container').classList.add('hidden');
+
+            if(m === 'Dinheiro') {
+                document.getElementById('troco-container').classList.remove('hidden');
+            } else if(m === 'Cartao') { // Nome ID sem til
+                document.getElementById('cartao-container').classList.remove('hidden');
+            }
         }
 
         function updateCartUI() {
@@ -218,21 +240,20 @@
             const n = document.getElementById('cust-name').value;
             const a = document.getElementById('cust-address').value;
             
-            if(!cart.length || d.value === "0" || !paymentMethod || !n) {
-                return alert("Por favor, preencha o Nome, Bairro e Forma de Pagamento!");
+            if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) {
+                return alert("Por favor, preencha todos os campos (Nome, Endereço, Bairro e Pagamento)!");
             }
             
             const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
             const total = cart.reduce((acc, cur) => acc + cur.price + (cur.extraPrice || 0), 0) + fee;
             
-            // Lógica de detalhes do pagamento
             let detPagamento = paymentMethod;
             if(paymentMethod === 'Dinheiro') {
                 const troco = document.getElementById('valor-troco').value;
                 detPagamento += troco ? ` (Troco para R$ ${troco})` : " (Não precisa de troco)";
-            } else if(paymentMethod === 'Cartão') {
+            } else if(paymentMethod === 'Cartao') {
                 const tipo = document.getElementById('tipo-cartao').value;
-                detPagamento += ` (${tipo})`;
+                detPagamento = `Cartão (${tipo})`;
             }
 
             let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
