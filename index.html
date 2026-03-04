@@ -25,7 +25,6 @@
         .animate-pulse-green { animation: pulse-green 2s infinite; }
         .animate-pulse-red { animation: pulse-red 2s infinite; }
         
-        /* Classe para o botão selecionado */
         .payment-btn.active { 
             background-color: #c2410c !important; 
             color: white !important; 
@@ -84,8 +83,8 @@
             
             <div id="cart-items" class="space-y-4 mb-6"></div>
 
-            <div class="mb-6 bg-stone-50 p-4 rounded-2xl border border-stone-200 text-sm">
-                <label class="font-bold mb-2 block text-left text-stone-700">Bairro para Entrega:</label>
+            <div class="mb-6 bg-stone-50 p-4 rounded-2xl border border-stone-200 text-sm text-left">
+                <label class="font-bold mb-2 block text-stone-700">Bairro para Entrega:</label>
                 <select id="delivery-location" onchange="updateCartUI()" class="w-full rounded-xl p-3 bg-white border mb-3">
                     <option value="0" data-fee="0">Selecione seu bairro...</option>
                     <option value="Centro" data-fee="3.00">Centro (R$ 3,00)</option>
@@ -136,7 +135,7 @@
         let cart = [];
         let paymentMethod = "";
 
-        // Gerar Dados (Pizza, Esfirras, Bebidas)
+        // Gerar 250 itens de exemplo (Pizzas, Esfirras, Bebidas)
         for(let i=1; i<=100; i++) PRODUCTS.push({ id: i, cat: 'pizzas', name: `Pizza ${i}`, price: 45.00, desc: "Ingredientes selecionados.", img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" });
         for(let i=101; i<=200; i++) PRODUCTS.push({ id: i, cat: 'esfirras', name: `Esfirra ${i-100}`, price: 6.00, desc: "Massa fofinha.", img: "https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" });
         for(let i=201; i<=250; i++) PRODUCTS.push({ id: i, cat: 'bebidas', name: `Bebida ${i-200}`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" });
@@ -185,27 +184,13 @@
         function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
         function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
 
-        // CORREÇÃO: Função de seleção de pagamento
         function setPayment(m) { 
             paymentMethod = m; 
-            
-            // Remove a classe ativa de todos
-            document.querySelectorAll('.payment-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Adiciona a classe ativa no botão clicado
+            document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`pay-${m}`).classList.add('active'); 
 
-            // Controla a visibilidade dos campos extras
-            document.getElementById('troco-container').classList.add('hidden');
-            document.getElementById('cartao-container').classList.add('hidden');
-
-            if(m === 'Dinheiro') {
-                document.getElementById('troco-container').classList.remove('hidden');
-            } else if(m === 'Cartao') { // Nome ID sem til
-                document.getElementById('cartao-container').classList.remove('hidden');
-            }
+            document.getElementById('troco-container').classList.toggle('hidden', m !== 'Dinheiro');
+            document.getElementById('cartao-container').classList.toggle('hidden', m !== 'Cartao');
         }
 
         function updateCartUI() {
@@ -241,7 +226,7 @@
             const a = document.getElementById('cust-address').value;
             
             if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) {
-                return alert("Por favor, preencha todos os campos (Nome, Endereço, Bairro e Pagamento)!");
+                return alert("Por favor, preencha todos os campos!");
             }
             
             const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
@@ -257,11 +242,11 @@
             }
 
             let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
-            msg += `*Cliente:* ${n}\n`;
-            msg += `*Endereço:* ${a}\n`;
-            msg += `*Bairro:* ${d.value}\n`;
-            msg += `*Pagamento:* ${detPagamento}\n\n`;
-            msg += `*ITENS:*\n`;
+            msg += `👤 *Cliente:* ${n}\n`;
+            msg += `📍 *Endereço:* ${a}\n`;
+            msg += `🏘️ *Bairro:* ${d.value}\n`;
+            msg += `💳 *Pagamento:* ${detPagamento}\n\n`;
+            msg += `🛒 *ITENS:*\n`;
             
             cart.forEach(i => {
                 msg += `• ${i.name} (R$ ${i.price.toFixed(2)})\n`;
@@ -269,7 +254,8 @@
             });
 
             msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n`;
-            msg += `*TOTAL: R$ ${total.toFixed(2)}*`;
+            msg += `*TOTAL: R$ ${total.toFixed(2)}*\n\n`;
+            msg += `*⏱️ Tempo de preparo:* 30 a 50 minutos`;
             
             window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
         }
