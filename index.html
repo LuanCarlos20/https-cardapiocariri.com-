@@ -10,245 +10,158 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .active-tab { border-bottom: 3px solid #c2410c; color: #c2410c; }
-        .modal-open { overflow: hidden; }
-        .payment-btn.active { background-color: #c2410c !important; color: white !important; }
+        
+        /* Estilo do Banner Rotativo */
+        .slider { overflow: hidden; width: 100%; border-radius: 16px; position: relative; height: 160px; }
+        .slides { display: flex; transition: transform 0.5s ease-in-out; height: 100%; }
+        .slide { min-width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 pb-24">
-
-    <div id="login-screen" class="fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center p-6 hidden">
-        <div class="w-full max-w-md text-center">
-            <h1 class="text-3xl font-bold text-orange-700 mb-2">Cardápio Cariri</h1>
-            <p class="text-gray-500 mb-8">Faça seu cadastro para começar a pedir</p>
-            
-            <div class="space-y-4">
-                <input type="text" id="reg-name" placeholder="Seu Nome Completo" class="w-full p-4 border rounded-2xl outline-orange-500">
-                <input type="tel" id="reg-phone" placeholder="WhatsApp (Ex: 88999999999)" class="w-full p-4 border rounded-2xl outline-orange-500">
-                <input type="text" id="reg-address" placeholder="Endereço de Entrega" class="w-full p-4 border rounded-2xl outline-orange-500">
-                <button onclick="saveUser()" class="w-full bg-orange-700 text-white font-bold py-4 rounded-2xl shadow-lg">Entrar no Cardápio</button>
-            </div>
-        </div>
-    </div>
 
     <header class="bg-white p-4 shadow-sm sticky top-0 z-50">
         <div class="flex justify-between items-center max-w-6xl mx-auto">
             <div>
                 <h1 class="text-xl font-bold text-orange-700">Cardápio Cariri</h1>
                 <p class="text-[10px] text-gray-400 flex items-center gap-1">
-                    <i class="fas fa-map-marker-alt"></i> Barbalha, Ceará
+                    <i class="fas fa-map-marker-alt"></i> Barbalha e Região
                 </p>
             </div>
-            <div onclick="clearUser()" class="flex items-center gap-2 bg-gray-100 p-2 rounded-full cursor-pointer">
-                <div class="w-8 h-8 bg-orange-200 rounded-full flex items-center justify-center text-orange-700">
-                    <i class="fa fa-user"></i>
-                </div>
-                <span id="user-display-name" class="text-xs font-bold pr-2">Perfil</span>
+            <div class="text-orange-700 font-bold text-sm">
+                <i class="fas fa-shopping-bag"></i>
             </div>
         </div>
     </header>
 
-    <div class="p-4 max-w-6xl mx-auto">
-        <div class="relative">
-            <input type="text" placeholder="Buscar lojas ou produtos..." class="w-full bg-white border border-gray-200 rounded-2xl py-3 pl-11 outline-none focus:ring-2 focus:ring-orange-500 shadow-sm">
+    <main class="max-w-6xl mx-auto p-4">
+        
+        <section class="slider mb-6 shadow-lg">
+            <div class="slides" id="slider-container">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" class="slide" alt="Propaganda 1">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&q=80" class="slide" alt="Propaganda 2">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80" class="slide" alt="Propaganda 3">
+            </div>
+        </section>
+
+        <div class="relative mb-6">
+            <input type="text" id="main-search" oninput="searchStore()" placeholder="O que você está procurando hoje?" 
+                   class="w-full bg-white border border-gray-200 rounded-2xl py-4 pl-12 outline-none focus:ring-2 focus:ring-orange-500 shadow-sm transition-all">
             <i class="fa fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
         </div>
-    </div>
 
-    <nav class="overflow-x-auto flex gap-4 px-4 pb-4 scrollbar-hide max-w-6xl mx-auto">
-        <button onclick="showSegment('all')" class="bg-orange-700 text-white px-6 py-2 rounded-full text-sm font-bold shrink-0">Tudo</button>
-        <button onclick="showSegment('restaurante')" class="bg-white border px-6 py-2 rounded-full text-sm font-medium shrink-0">Pizzarias</button>
-        <button onclick="showSegment('acai')" class="bg-white border px-6 py-2 rounded-full text-sm font-medium shrink-0">Açaí</button>
-        <button onclick="showSegment('loja')" class="bg-white border px-6 py-2 rounded-full text-sm font-medium shrink-0">Lojas</button>
-    </nav>
+        <nav class="overflow-x-auto flex gap-3 pb-6 scrollbar-hide">
+            <button onclick="filterSegment('all')" class="bg-orange-700 text-white px-6 py-2 rounded-full text-xs font-bold shrink-0 shadow-md">Tudo</button>
+            <button onclick="filterSegment('restaurante')" class="bg-white border px-6 py-2 rounded-full text-xs font-medium shrink-0 hover:bg-orange-50 transition">Restaurantes</button>
+            <button onclick="filterSegment('acai')" class="bg-white border px-6 py-2 rounded-full text-xs font-medium shrink-0 hover:bg-orange-50 transition">Açaí</button>
+            <button onclick="filterSegment('loja')" class="bg-white border px-6 py-2 rounded-full text-xs font-medium shrink-0 hover:bg-orange-50 transition">Lojas & Variedades</button>
+        </nav>
 
-    <main id="store-list" class="max-w-6xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        </main>
-
-    <div id="menu-modal" class="fixed inset-0 bg-white z-[60] hidden overflow-y-auto">
-        <div class="sticky top-0 bg-white p-4 border-b flex justify-between items-center">
-            <button onclick="closeMenu()" class="text-xl px-2"><i class="fa fa-arrow-left"></i></button>
-            <h2 id="current-store-name" class="font-bold">Loja</h2>
-            <div class="w-8"></div>
-        </div>
-        <div id="menu-content" class="p-4 max-w-4xl mx-auto pb-32">
+        <div id="store-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             </div>
+    </main>
+
+    <div id="checkout-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6">
+            <h2 class="text-xl font-bold mb-4">Quase lá!</h2>
+            <p class="text-gray-500 text-sm mb-4">Informe seus dados para entrega na primeira vez.</p>
+            <div class="space-y-3">
+                <input type="text" id="cust-name" placeholder="Nome completo" class="w-full p-3 border rounded-xl outline-orange-500">
+                <input type="text" id="cust-address" placeholder="Endereço (Rua, Nº, Bairro)" class="w-full p-3 border rounded-xl outline-orange-500">
+                <button onclick="confirmOrder()" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl shadow-lg mt-2">
+                    Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i>
+                </button>
+                <button onclick="toggleCheckout(false)" class="w-full text-gray-400 text-sm font-medium py-2">Voltar</button>
+            </div>
+        </div>
     </div>
 
-    <footer id="footer-cart" class="fixed bottom-0 w-full bg-white border-t p-4 flex items-center justify-between z-50 hidden">
+    <footer id="footer-cart" class="fixed bottom-0 w-full bg-white border-t p-4 flex items-center justify-between z-50 hidden animate-bounce-short">
         <div class="flex flex-col">
-            <span class="text-[10px] text-gray-500 font-bold uppercase">Total do Pedido</span>
+            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Total Selecionado</span>
             <span class="text-xl font-bold text-orange-800" id="cart-total">R$ 0,00</span>
         </div>
-        <button onclick="openCheckout()" class="bg-orange-700 text-white px-8 py-3 rounded-2xl font-bold shadow-lg">
-            Finalizar <i class="fa fa-shopping-basket ml-2"></i>
+        <button onclick="toggleCheckout(true)" class="bg-orange-700 text-white px-8 py-3.5 rounded-2xl font-bold shadow-xl active:scale-95 transition-transform">
+            Pedir Agora <i class="fa fa-shopping-basket ml-2"></i>
         </button>
     </footer>
 
     <script>
         // BANCO DE DADOS DAS LOJAS
         const STORES = [
-            {
-                id: 1,
-                name: "Pizzaria A Portuguesa",
-                segment: "restaurante",
-                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
-                whatsapp: "5588992791644",
-                items: [
-                    { name: "Pizza Calabresa (G)", price: 33.00, desc: "Mussarela e calabresa" },
-                    { name: "Pizza Portuguesa (G)", price: 38.00, desc: "Ovos, presunto e cebola" }
-                ]
-            },
-            {
-                id: 2,
-                name: "Império do Açaí",
-                segment: "acai",
-                image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400",
-                whatsapp: "5588999999999",
-                items: [
-                    { name: "Açaí no Copo 500ml", price: 18.00, desc: "Acompanha 3 adicionais" },
-                    { name: "Barca de Açaí", price: 35.00, desc: "Ideal para 2 pessoas" }
-                ]
-            },
-            {
-                id: 3,
-                name: "Fashion Cariri Moda",
-                segment: "loja",
-                image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400",
-                whatsapp: "5588988888888",
-                items: [
-                    { name: "T-Shirt Básica", price: 49.90, desc: "Algodão 100% diversas cores" },
-                    { name: "Calça Jeans Premium", price: 120.00, desc: "Modelagem Skinny" }
-                ]
-            }
+            { id: 1, name: "Pizzaria A Portuguesa", segment: "restaurante", image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", whatsapp: "5588992791644" },
+            { id: 2, name: "Império do Açaí", segment: "acai", image: "https://images.unsplash.com/photo-1590301157890-4810ed352733?w=400", whatsapp: "5588999999999" },
+            { id: 3, name: "Cariri Fashion", segment: "loja", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400", whatsapp: "5588988888888" },
+            { id: 4, name: "Prime Burger", segment: "restaurante", image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400", whatsapp: "5588977777777" }
         ];
 
-        let cart = [];
-        let currentUser = JSON.parse(localStorage.getItem('user_cariri')) || null;
+        let cartTotal = 0;
         let activeStore = null;
 
-        // SISTEMA DE USUÁRIO
-        function checkAuth() {
-            if (!currentUser) {
-                document.getElementById('login-screen').classList.remove('hidden');
-            } else {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('user-display-name').innerText = currentUser.name.split(' ')[0];
-                renderStores();
-            }
+        // LÓGICA DO BANNER (SLIDER)
+        let currentSlide = 0;
+        const slides = document.getElementById('slider-container');
+        const totalSlides = slides.children.length;
+
+        function moveSlider() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            slides.style.transform = `translateX(-${currentSlide * 100}%)`;
         }
+        setInterval(moveSlider, 3000); // Muda a cada 3 segundos
 
-        function saveUser() {
-            const name = document.getElementById('reg-name').value;
-            const phone = document.getElementById('reg-phone').value;
-            const address = document.getElementById('reg-address').value;
-
-            if (!name || !phone || !address) return alert("Preencha todos os dados!");
-
-            currentUser = { name, phone, address };
-            localStorage.setItem('user_cariri', JSON.stringify(currentUser));
-            checkAuth();
-        }
-
-        function clearUser() {
-            if(confirm("Deseja sair e alterar seus dados?")) {
-                localStorage.removeItem('user_cariri');
-                location.reload();
-            }
-        }
-
-        // RENDERIZAÇÃO
-        function renderStores(segment = 'all') {
-            const container = document.getElementById('store-list');
-            container.innerHTML = "";
-            
-            const filtered = segment === 'all' ? STORES : STORES.filter(s => s.segment === segment);
-
-            filtered.forEach(store => {
-                container.innerHTML += `
-                    <div onclick="openStore(${store.id})" class="bg-white rounded-2xl shadow-sm border overflow-hidden flex cursor-pointer hover:shadow-md transition">
-                        <img src="${store.image}" class="w-24 h-24 object-cover">
-                        <div class="p-3 flex-1">
-                            <h3 class="font-bold text-gray-800">${store.name}</h3>
-                            <p class="text-xs text-gray-500 uppercase font-semibold">${store.segment}</p>
-                            <div class="mt-2 text-green-600 text-[10px] font-bold flex items-center gap-1">
-                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> ABERTO AGORA
-                            </div>
+        // RENDERIZAÇÃO DAS LOJAS
+        function renderStores(data) {
+            const grid = document.getElementById('store-grid');
+            grid.innerHTML = data.map(store => `
+                <div onclick="selectStore(${store.id})" class="bg-white rounded-2xl shadow-sm border p-3 flex items-center gap-4 cursor-pointer hover:shadow-md transition active:scale-95">
+                    <img src="${store.image}" class="w-20 h-20 rounded-xl object-cover">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-sm text-gray-800">${store.name}</h3>
+                        <p class="text-[10px] text-gray-400 uppercase tracking-tighter">${store.segment}</p>
+                        <div class="mt-2 text-green-600 text-[10px] font-bold flex items-center gap-1">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Aberto
                         </div>
                     </div>
-                `;
-            });
+                    <i class="fa fa-chevron-right text-gray-300 text-xs"></i>
+                </div>
+            `).join('');
         }
 
-        function openStore(id) {
+        function filterSegment(seg) {
+            const filtered = seg === 'all' ? STORES : STORES.filter(s => s.segment === seg);
+            renderStores(filtered);
+        }
+
+        function searchStore() {
+            const term = document.getElementById('main-search').value.toLowerCase();
+            const filtered = STORES.filter(s => s.name.toLowerCase().includes(term));
+            renderStores(filtered);
+        }
+
+        function selectStore(id) {
             activeStore = STORES.find(s => s.id === id);
-            document.getElementById('current-store-name').innerText = activeStore.name;
-            const content = document.getElementById('menu-content');
-            
-            content.innerHTML = `
-                <div class="mb-6 h-32 w-full rounded-2xl bg-cover bg-center" style="background-image: url('${activeStore.image}')"></div>
-                <h3 class="font-bold text-xl mb-4">Cardápio</h3>
-            `;
-
-            activeStore.items.forEach((item, index) => {
-                content.innerHTML += `
-                    <div class="bg-white p-4 rounded-xl border mb-3 flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold">${item.name}</h4>
-                            <p class="text-xs text-gray-500">${item.desc}</p>
-                            <p class="text-orange-700 font-bold mt-1">R$ ${item.price.toFixed(2)}</p>
-                        </div>
-                        <button onclick="addToCart(${index})" class="bg-gray-100 w-10 h-10 rounded-full text-orange-700 font-bold">+</button>
-                    </div>
-                `;
-            });
-
-            document.getElementById('menu-modal').classList.remove('hidden');
-            document.body.classList.add('modal-open');
+            // Simulação de adicionar um valor ao carrinho apenas para mostrar o rodapé
+            cartTotal = 35.00; 
+            document.getElementById('cart-total').innerText = `R$ ${cartTotal.toFixed(2)}`;
+            document.getElementById('footer-cart').classList.remove('hidden');
         }
 
-        function closeMenu() {
-            document.getElementById('menu-modal').classList.add('hidden');
-            document.body.classList.remove('modal-open');
-            cart = []; // Limpa carrinho ao sair da loja (opcional)
-            updateCartUI();
+        function toggleCheckout(show) {
+            document.getElementById('checkout-modal').classList.toggle('hidden', !show);
         }
 
-        function addToCart(index) {
-            const item = activeStore.items[index];
-            cart.push(item);
-            updateCartUI();
+        function confirmOrder() {
+            const name = document.getElementById('cust-name').value;
+            const addr = document.getElementById('cust-address').value;
+
+            if(!name || !addr) return alert("Por favor, preencha seu nome e endereço.");
+
+            const msg = encodeURIComponent(`*NOVO PEDIDO - CARDÁPIO CARIRI*\n\n👤 *Cliente:* ${name}\n📍 *Endereço:* ${addr}\n🏪 *Loja:* ${activeStore.name}\n\n🛒 Gostaria de iniciar meu pedido!`);
+            window.open(`https://api.whatsapp.com/send?phone=${activeStore.whatsapp}&text=${msg}`);
+            toggleCheckout(false);
         }
 
-        function updateCartUI() {
-            const total = cart.reduce((acc, cur) => acc + cur.price, 0);
-            document.getElementById('cart-total').innerText = `R$ ${total.toFixed(2)}`;
-            document.getElementById('footer-cart').classList.toggle('hidden', cart.length === 0);
-        }
-
-        function openCheckout() {
-            const total = cart.reduce((acc, cur) => acc + cur.price, 0);
-            let msg = `*PEDIDO - ${activeStore.name}*\n\n`;
-            msg += `👤 *Cliente:* ${currentUser.name}\n`;
-            msg += `📍 *Endereço:* ${currentUser.address}\n`;
-            msg += `📱 *WhatsApp:* ${currentUser.phone}\n\n`;
-            msg += `🛒 *ITENS:*\n`;
-            
-            cart.forEach(item => {
-                msg += `• ${item.name} (R$ ${item.price.toFixed(2)})\n`;
-            });
-
-            msg += `\n*TOTAL: R$ ${total.toFixed(2)}*`;
-            
-            window.open(`https://api.whatsapp.com/send?phone=${activeStore.whatsapp}&text=${encodeURIComponent(msg)}`);
-        }
-
-        function showSegment(seg) {
-            renderStores(seg);
-        }
-
-        // Iniciar
-        checkAuth();
+        // Inicializar
+        renderStores(STORES);
     </script>
 </body>
 </html>
