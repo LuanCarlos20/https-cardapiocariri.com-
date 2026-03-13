@@ -72,9 +72,9 @@
     <main class="max-w-6xl mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4 mt-2" id="menu-container"></main>
 
     <div id="pizza-modal" class="fixed inset-0 bg-black/70 z-[70] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-lg rounded-2xl max-h-[90vh] overflow-hidden flex flex-col relative">
+        <div class="bg-white w-full max-w-lg rounded-2xl max-h-[90vh] overflow-hidden flex flex-col relative text-left">
             <div class="p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
-                <h2 id="modal-pizza-title" class="font-bold text-lg uppercase text-left">ITEM</h2>
+                <h2 id="modal-pizza-title" class="font-bold text-lg uppercase">ITEM</h2>
                 <button onclick="closePizzaModal()" class="bg-red-500 text-white w-8 h-8 rounded-md text-xl font-bold">×</button>
             </div>
             <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
@@ -83,16 +83,16 @@
                     <span class="font-bold text-sm">Escolha os Sabores</span>
                     <span id="flavor-limit-text" class="text-xs text-stone-500">Escolha até 2</span>
                 </div>
-                <div id="sabores-lista" class="space-y-1 text-left"></div>
-                <div id="borda-container" class="border-box text-left">
+                <div id="sabores-lista" class="space-y-1"></div>
+                <div id="borda-container" class="border-box">
                     <p class="font-bold text-[10px] uppercase mb-3 tracking-widest text-stone-600">BORDAS RECHEADAS</p>
                     <div id="bordas-lista" class="space-y-3"></div>
                 </div>
-                <div class="text-left">
+                <div>
                     <label class="font-bold text-sm">Observação</label>
-                    <textarea id="pizza-obs" class="w-full border rounded-xl p-3 mt-1 outline-none" placeholder="Ex: Sem cebola..."></textarea>
+                    <textarea id="pizza-obs" class="w-full border rounded-xl p-3 mt-1 outline-none" placeholder="Ex: Sem cebola, caprichar no milho..."></textarea>
                 </div>
-                <div id="qty-container-global" class="mt-4 text-left">
+                <div id="qty-container-global" class="mt-4">
                     <p class="font-bold text-sm mb-2">Quantidade Total</p>
                     <div class="flex items-center">
                         <button onclick="updateQty(-1)" class="bg-red-500 text-white w-12 h-12 rounded-l-xl font-bold">-</button>
@@ -109,11 +109,11 @@
 
     <div id="admin-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl p-6 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-xl font-bold uppercase mb-4">Painel Administrativo</h2>
+            <h2 class="text-xl font-bold uppercase mb-4 text-left">Painel Administrativo</h2>
             <div class="space-y-6">
-                <section><h3 class="font-bold border-b mb-2">Pizzas (Por Sabor/Tamanho)</h3><div id="admin-flavor-prices" class="space-y-4"></div></section>
-                <section><h3 class="font-bold border-b mb-2">Outros Itens</h3><div id="admin-others-prices" class="space-y-2"></div></section>
-                <section><h3 class="font-bold border-b mb-2">Taxas de Entrega</h3><div id="admin-delivery-list" class="space-y-2"></div></section>
+                <section><h3 class="font-bold border-b mb-2 text-left">Gerenciar Preços das Pizzas</h3><div id="admin-flavor-prices" class="space-y-4"></div></section>
+                <section><h3 class="font-bold border-b mb-2 text-left">Gerenciar Bebidas/Outros</h3><div id="admin-others-prices" class="space-y-2"></div></section>
+                <section><h3 class="font-bold border-b mb-2 text-left">Taxas de Entrega</h3><div id="admin-delivery-list" class="space-y-2"></div></section>
                 <button onclick="saveAdmin()" class="w-full bg-orange-700 text-white py-3 rounded-xl font-bold">SALVAR TUDO</button>
                 <button onclick="closeAdmin()" class="w-full bg-stone-200 py-3 rounded-xl font-bold mt-2">CANCELAR</button>
             </div>
@@ -151,7 +151,7 @@
                     <input type="number" id="valor-troco" class="w-full border rounded-xl p-3 mt-1">
                 </div>
                 <input type="text" id="cust-name" placeholder="Seu Nome" class="w-full border rounded-xl p-3">
-                <input type="text" id="cust-address" placeholder="Endereço Completo" class="w-full border rounded-xl p-3">
+                <input type="text" id="cust-address" placeholder="Endereço Completo (Rua, Nº, Ref)" class="w-full border rounded-xl p-3">
                 <button onclick="sendOrder()" class="w-full bg-green-600 text-white font-bold py-4 rounded-2xl text-lg mt-2">Finalizar no WhatsApp <i class="fab fa-whatsapp ml-2"></i></button>
             </div>
         </div>
@@ -167,42 +167,48 @@
             { bairro: "Arajara", taxa: 8.00 }, { bairro: "Outros", taxa: 10.00 }
         ];
 
+        // --- CARDÁPIO COMPLETO CONFORME AS IMAGENS ---
         let SABORES_PIZZA = [
-            { id: 1, nome: "01 Americana", desc: "Presunto, mussarela, ovos e bacon", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
-            { id: 2, nome: "02 Atum", desc: "Atum e cebola", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
-            { id: 3, nome: "03 Bacon", desc: "Mussarela e bacon", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 4, nome: "04 Baiana", desc: "Calabresa, ovos, pimenta e cebola", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 5, nome: "05 Brócolis", desc: "Brócolis, bacon e catupiry", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
-            { id: 6, nome: "06 Caipira", desc: "Frango, milho e catupiry", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
-            { id: 7, nome: "07 Calabresa", desc: "Calabresa e cebola", precos: { 'P': 30, 'M': 36, 'G': 42, 'GG': 49 } },
-            { id: 8, nome: "08 Califórnia", desc: "Presunto, mussarela e frutas", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
-            { id: 9, nome: "09 Carne Seca", desc: "Carne seca, cebola e catupiry", precos: { 'P': 40, 'M': 46, 'G': 52, 'GG': 60 } },
-            { id: 10, nome: "10 Calabresa c/ Mussarela", desc: "Calabresa e mussarela", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 11, nome: "11 Catupiry", desc: "Mussarela e catupiry", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 12, nome: "12 Escarola", desc: "Escarola, bacon e catupiry", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 13, nome: "13 Frango c/ Catupiry", desc: "Frango e catupiry", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 14, nome: "14 Lombo", desc: "Lombo, cebola e catupiry", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
-            { id: 15, nome: "15 Marguerita", desc: "Mussarela, tomate e manjericão", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
-            { id: 16, nome: "16 Milho Verde", desc: "Mussarela e milho", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
-            { id: 17, nome: "17 Mussarela", desc: "Mussarela e tomate", precos: { 'P': 30, 'M': 36, 'G': 42, 'GG': 49 } },
-            { id: 18, nome: "18 Napolitana", desc: "Mussarela, tomate e parmesão", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 19, nome: "19 Palmito", desc: "Palmito e catupiry", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
-            { id: 20, nome: "20 Portuguesa", desc: "Presunto, ovos, ervilha, cebola e mussarela", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
-            { id: 21, nome: "21 Quatro Queijos", desc: "Mussarela, catupiry, provolone e parmesão", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
-            { id: 22, nome: "22 Siciliana", desc: "Mussarela, champignon e bacon", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
-            { id: 23, nome: "23 Toscana", desc: "Calabresa moída e mussarela", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
-            { id: 24, nome: "24 Vegetariana", desc: "Escarola, palmito, milho e ervilha", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
-            { id: 25, nome: "25 À Moda do Cheff", desc: "Especial da casa", precos: { 'P': 38, 'M': 44, 'G': 50, 'GG': 58 } }
+            { id: 1, nome: "01 AMERICANA", desc: "Molho, presunto, mussarela, ovos, bacon e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
+            { id: 2, nome: "02 ATUM", desc: "Molho, atum ralado, cebola e orégano", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
+            { id: 3, nome: "03 BACON", desc: "Molho, mussarela, bacon e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 4, nome: "04 BAIANA", desc: "Calabresa moída, ovos, cebola, pimenta e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 5, nome: "05 BRÓCOLIS", desc: "Brócolis, mussarela, bacon, catupiry e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
+            { id: 6, nome: "06 CAIPIRA", desc: "Frango, milho, mussarela, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
+            { id: 7, nome: "07 CALABRESA", desc: "Molho, calabresa fatiada, cebola e orégano", precos: { 'P': 30, 'M': 36, 'G': 42, 'GG': 49 } },
+            { id: 8, nome: "08 CALIFÓRNIA", desc: "Mussarela, presunto, pêssego, figo, abacaxi e cereja", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
+            { id: 9, nome: "09 CARNE SECA", desc: "Carne seca, mussarela, cebola, catupiry e orégano", precos: { 'P': 40, 'M': 46, 'G': 52, 'GG': 60 } },
+            { id: 10, nome: "10 CALABRESA C/ MUSSARELA", desc: "Mussarela, calabresa e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 11, nome: "11 CATUPIRY", desc: "Molho, mussarela, catupiry e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 12, nome: "12 ESCAROLA", desc: "Escarola, mussarela, bacon, catupiry e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 13, nome: "13 FRANGO C/ CATUPIRY", desc: "Frango desfiado, mussarela, catupiry e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 14, nome: "14 LOMBO", desc: "Lombo fatiado, cebola, mussarela, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
+            { id: 15, nome: "15 MARGUERITA", desc: "Mussarela, rodelas de tomate, manjericão e orégano", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
+            { id: 16, nome: "16 MILHO VERDE", desc: "Molho, mussarela, milho verde e orégano", precos: { 'P': 31, 'M': 37, 'G': 43, 'GG': 50 } },
+            { id: 17, nome: "17 MUSSARELA", desc: "Molho, mussarela, rodelas de tomate e orégano", precos: { 'P': 30, 'M': 36, 'G': 42, 'GG': 49 } },
+            { id: 18, nome: "18 NAPOLITANA", desc: "Mussarela, rodelas de tomate, parmesão e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 19, nome: "19 PALMITO", desc: "Palmito, mussarela, catupiry e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
+            { id: 20, nome: "20 PORTUGUESA", desc: "Presunto, ovos, ervilha, cebola, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
+            { id: 21, nome: "21 QUATRO QUEIJOS", desc: "Mussarela, catupiry, provolone, parmesão e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 55 } },
+            { id: 22, nome: "22 SICILIANA", desc: "Mussarela, champignon, bacon e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
+            { id: 23, nome: "23 TOSCANA", desc: "Molho, calabresa moída, mussarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 24, nome: "24 VEGETARIANA", desc: "Escarola, palmito, milho, ervilha e mussarela", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 54 } },
+            { id: 25, nome: "25 À MODA DO CHEFF", desc: "Presunto, mussarela, bacon, calabresa e milho", precos: { 'P': 38, 'M': 44, 'G': 50, 'GG': 58 } },
+            { id: 26, nome: "26 BRIGADEIRO", desc: "Chocolate ao leite e granulado", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 27, nome: "27 PRESTÍGIO", desc: "Chocolate ao leite e coco ralado", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } },
+            { id: 28, nome: "28 ROMEU E JULIETA", desc: "Mussarela e goiabada", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 52 } }
         ];
 
         let OUTROS_PRODUTOS = [
             { id: 101, cat: 'esfirras', name: "Esfirra de Carne", price: 6.00 },
             { id: 102, cat: 'esfirras', name: "Esfirra de Queijo", price: 6.00 },
             { id: 103, cat: 'esfirras', name: "Esfirra de Frango", price: 6.00 },
-            { id: 104, cat: 'esfirras', name: "Esfirra Calabresa", price: 6.00 },
-            { id: 201, cat: 'bebidas', name: "Coca-Cola 2L", price: 12.00 },
+            { id: 104, cat: 'esfirras', name: "Esfirra de Calabresa", price: 6.00 },
+            { id: 105, cat: 'esfirras', name: "Esfirra Doce (Chocolate)", price: 8.00 },
+            { id: 201, cat: 'bebidas', name: "Coca-Cola 2L", price: 13.00 },
             { id: 202, cat: 'bebidas', name: "Coca-Cola 600ml", price: 7.00 },
-            { id: 203, cat: 'bebidas', name: "Guaraná 2L", price: 10.00 }
+            { id: 203, cat: 'bebidas', name: "Guaraná Antártica 2L", price: 10.00 },
+            { id: 204, cat: 'bebidas', name: "Água Mineral 500ml", price: 3.00 }
         ];
 
         const BORDAS = [{ nome: "Sem Borda", preco: 0 }, { nome: "Cheddar", preco: 7 }, { nome: "Catupiry", preco: 7 }, { nome: "Chocolate", preco: 8 }];
@@ -231,6 +237,7 @@
                             <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200" class="w-24 h-24 rounded-xl object-cover">
                             <div class="flex-1 text-left min-w-0">
                                 <h3 class="font-bold text-sm uppercase">PIZZA (${s})</h3>
+                                <p class="text-[10px] text-stone-500">Escolha até 2 sabores</p>
                                 <button onclick="openModal('pizza', '${s}')" class="mt-4 w-full bg-green-500 text-white py-2 rounded-full font-bold text-xs">Montar Pizza</button>
                             </div>
                         </div>`;
@@ -244,7 +251,7 @@
                     <img src="https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" class="w-24 h-24 rounded-xl object-cover">
                     <div class="flex-1 min-w-0">
                         <div class="flex justify-between">
-                            <h3 class="font-bold text-sm truncate">${p.name}</h3>
+                            <h3 class="font-bold text-sm truncate uppercase">${p.name}</h3>
                             <span class="text-orange-700 font-bold">R$ ${p.price.toFixed(2)}</span>
                         </div>
                         <button onclick="addToCartDirect(${p.id})" class="mt-4 w-full bg-stone-900 text-white py-2 rounded-xl text-xs font-bold">Adicionar</button>
@@ -269,9 +276,12 @@
                 <div class="flex items-center justify-between py-2 border-b">
                     <div class="flex items-center gap-3">
                         <input type="checkbox" onchange="togglePizzaSabor(${s.id})" ${curItem.selectedFlavors[s.id] ? 'checked' : ''} class="w-5 h-5 accent-green-600">
-                        <div><p class="text-sm font-bold uppercase">${s.nome}</p></div>
+                        <div>
+                            <p class="text-xs font-bold uppercase">${s.nome}</p>
+                            <p class="text-[9px] text-stone-400 leading-tight">${s.desc}</p>
+                        </div>
                     </div>
-                    <span class="text-xs font-bold text-stone-600">R$ ${s.precos[curItem.size].toFixed(2)}</span>
+                    <span class="text-[10px] font-bold text-stone-600">R$ ${s.precos[curItem.size].toFixed(2)}</span>
                 </div>`).join('');
         }
 
@@ -312,7 +322,7 @@
 
         function confirmItem() {
             const flavors = Object.values(curItem.selectedFlavors);
-            if(flavors.length === 0) return alert("Escolha um sabor!");
+            if(flavors.length === 0) return alert("Escolha pelo menos um sabor!");
             const precoBase = Math.max(...flavors.map(f => f.price));
             const precoFinal = (precoBase + (curItem.border ? curItem.border.preco : 0)) * curItem.qty;
             cart.push({
@@ -341,12 +351,12 @@
                         </div>
                     </div>`).join('');
                 document.getElementById('admin-others-prices').innerHTML = OUTROS_PRODUTOS.map((p, i) => `
-                    <div class="flex justify-between items-center bg-stone-50 p-2 rounded border">
+                    <div class="flex justify-between items-center bg-stone-50 p-2 rounded border text-left">
                         <span class="text-xs uppercase">${p.name}</span>
                         <input type="number" id="o-${i}" value="${p.price}" class="w-20 border p-1 text-xs">
                     </div>`).join('');
                 document.getElementById('admin-delivery-list').innerHTML = TAXAS_ENTREGA.map((t, i) => `
-                    <div class="flex justify-between items-center bg-stone-50 p-2 rounded border">
+                    <div class="flex justify-between items-center bg-stone-50 p-2 rounded border text-left">
                         <span class="text-xs">${t.bairro}</span>
                         <input type="number" id="fee-${i}" value="${t.taxa}" class="w-20 border p-1 text-xs">
                     </div>`).join('');
@@ -365,7 +375,7 @@
             renderMenu();
             renderDeliveryOptions();
             closeAdmin();
-            alert("Salvo!");
+            alert("Alterações salvas com sucesso!");
         }
 
         function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
@@ -400,8 +410,8 @@
             document.getElementById('cart-items').innerHTML = cart.map((item, i) => `
                 <div class="bg-stone-50 p-3 rounded-xl border flex justify-between items-center text-left">
                     <div>
-                        <p class="font-bold text-sm">${item.qty}x ${item.name}</p>
-                        <p class="text-[10px] text-stone-500">${item.extra} ${item.obs ? '| '+item.obs : ''}</p>
+                        <p class="font-bold text-sm uppercase">${item.qty}x ${item.name}</p>
+                        <p class="text-[10px] text-stone-500">${item.extra} ${item.obs ? '| Obs: '+item.obs : ''}</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-bold text-orange-700">R$ ${item.price.toFixed(2)}</span>
@@ -410,17 +420,19 @@
                 </div>`).join('');
         }
 
+        // --- FUNÇÃO DE ENVIO COM OBSERVAÇÃO ---
         function sendOrder() {
             const d = document.getElementById('delivery-location'), n = document.getElementById('cust-name').value, a = document.getElementById('cust-address').value;
-            if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) return alert("Preencha tudo!");
+            if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) return alert("Por favor, preencha todos os campos do pedido!");
+            
             const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
             const subtotal = cart.reduce((acc, cur) => acc + cur.price, 0);
             
             let detPag = paymentMethod;
-            if(paymentMethod === 'Dinheiro') detPag += ` (Troco: ${document.getElementById('valor-troco').value || 'Não'})`;
+            if(paymentMethod === 'Dinheiro') detPag += ` (Troco para: ${document.getElementById('valor-troco').value || 'Não necessário'})`;
 
             let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
-            msg += `👤 *Cliente:* ${n}\n📍 *End:* ${a}\n🏘️ *Bairro:* ${d.value}\n💳 *Pag:* ${detPag}\n\n*ITENS:*\n`;
+            msg += `👤 *Cliente:* ${n}\n📍 *End:* ${a}\n🏘️ *Bairro:* ${d.value}\n💳 *Pagamento:* ${detPag}\n\n*ITENS:*\n`;
             
             cart.forEach(i => {
                 msg += `• ${i.qty}x ${i.name}\n`;
@@ -435,6 +447,7 @@
         function checkStoreStatus() {
             const now = new Date();
             const tempo = now.getHours() * 60 + now.getMinutes();
+            // Aberto das 18h às 23h30 (1080 min a 1410 min) | Fechado na Terça (2)
             const aberto = (tempo >= 1080 && tempo < 1410) && (now.getDay() !== 2);
             const div = document.getElementById('status-loja');
             const logo = document.getElementById('logo-pizzaria');
