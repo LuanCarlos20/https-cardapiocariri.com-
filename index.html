@@ -232,50 +232,51 @@
             { bairro: "Arajara", taxa: 8.00 }, { bairro: "Outros", taxa: 10.00 }
         ];
 
+        // Sabores de Pizza sem numeração
         let SABORES_PIZZA = [
-            { id: 1, nome: "01 AMERICANA", desc: "Molho, carne de sol, frango, cebola caramelizada, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 3, nome: "03 BACON", desc: "Molho, bacon, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 4, nome: "04 BACON 2", desc: "Molho, muçarela, bacon, rodelas de tomate, catupiry original e orégano", precos: { 'P': 37, 'M': 43, 'G': 49, 'GG': 55 } },
-            { id: 5, nome: "05 BAIANA", desc: "Molho, calabresa, muçarela, ovo, pimenta, cebola e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 6, nome: "06 BATATA PALHA", desc: "Molho, batata palha, calabresa moída, muçarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 7, nome: "07 BAURU", desc: "Molho, muçarela, presunto, tomate e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 8, nome: "08 BRIGADEIRO", desc: "Chocolate e granulado", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 10, nome: "10 CALABRESA C/ MUSSARELA", desc: "Molho, calabresa, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 11, nome: "11 CALAMIDADE", desc: "Molho, calabresa, frango, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 12, nome: "12 CARNE SECA C/ MUSSARELA", desc: "Molho, carne seca, muçarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 13, nome: "13 CAIPIRA", desc: "Molho, frango, milho, bacon, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 14, nome: "14 CAMARÃO", desc: "Molho, camarão, muçarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 65 } },
-            { id: 15, nome: "15 ESPANHOLA", desc: "Molho, presunto, calabresa, cebola, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 16, nome: "16 FRANBACON", desc: "Molho, frango, bacon, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 17, nome: "17 FRANGO C/ CATUPIRY", desc: "Molho, frango, catupiry e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 18, nome: "18 FRANGO 2", desc: "Molho, frango, bacon, catupiry, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 56 } },
-            { id: 19, nome: "19 FRANGO COM MUSSARELA", desc: "Molho, frango, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 20, nome: "20 FIORENTINA", desc: "Molho, frango, catupiry, milho e orégano", precos: { 'P': 35, 'M': 42, 'G': 47, 'GG': 53 } },
-            { id: 21, nome: "21 INTERATIVA", desc: "Escolha até 5 ingredientes", precos: { 'P': 47, 'M': 51, 'G': 61, 'GG': 67 } },
-            { id: 22, nome: "22 LOMBO", desc: "Molho, lombo canadense, muçarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 65 } },
-            { id: 23, nome: "23 MODA DA CASA", desc: "Molho, frango, milho, calabresa, bacon, mussarela e orégano", precos: { 'P': 39, 'M': 44, 'G': 51, 'GG': 56 } },
-            { id: 24, nome: "24 MODA DO PIZZAIOLO", desc: "Molho, presunto, frango, mussarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 25, nome: "25 MARGHERITA", desc: "Molho, mussarela, manjericão, tomate e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 26, nome: "26 MEXICANA", desc: "Molho, bacon, mussarela, milho e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 27, nome: "27 MILHO VERDE", desc: "Molho, milho, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 28, nome: "28 MODA", desc: "Molho, mussarela, calabresa, ovo, cebola e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 29, nome: "29 MODA 2", desc: "Molho, mussarela, calabresa, ovo, cebola, cheiro-verde e orégano", precos: { 'P': 38, 'M': 43, 'G': 50, 'GG': 55 } },
-            { id: 30, nome: "30 MUSSARELA", desc: "Molho, mussarela, tomate e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
-            { id: 31, nome: "31 NORDESTINA", desc: "Molho, carne seca, mussarela, tomate, cebola e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
-            { id: 32, nome: "32 NORDESTINA 2", desc: "Molho, mussarela, carne de sol, macaxeira frita, cebola e orégano", precos: { 'P': 39, 'M': 44, 'G': 51, 'GG': 56 } },
-            { id: 34, nome: "34 PEITO DE PERU", desc: "Molho, peito de peru, mussarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 66 } },
-            { id: 35, nome: "35 PEITO DE PERU C/ CATUPIRY", desc: "Molho, peito de peru, catupiry e orégano", precos: { 'P': 45, 'M': 50, 'G': 55, 'GG': 66 } },
-            { id: 36, nome: "36 PEPPERONI", desc: "Molho, pepperoni, mussarela, parmesão e orégano", precos: { 'P': 45, 'M': 50, 'G': 55, 'GG': 66 } },
-            { id: 37, nome: "37 PRESTÍGIO", desc: "Leite condensado, coco e chocolate", precos: { 'P': 35, 'M': 41, 'G': 51, 'GG': 53 } },
-            { id: 38, nome: "38 PORTUGUESA", desc: "Molho, mussarela, presunto, cebola, ovo e orégano", precos: { 'P': 36, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 39, nome: "39 DOIS QUEIJOS", desc: "Molho, mussarela, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 40, nome: "40 TRÊS QUEIJOS", desc: "Molho, mussarela, parmesão, catupiry e orégano", precos: { 'P': 37, 'M': 43, 'G': 50, 'GG': 55 } },
-            { id: 41, nome: "41 QUATRO QUEIJOS", desc: "Molho, mussarela, parmesão, catupiry, provolone e orégano", precos: { 'P': 39, 'M': 45, 'G': 52, 'GG': 58 } },
-            { id: 42, nome: "42 QUATRO ESTAÇÕES", desc: "Molho, calabresa, frango, presunto, carne de sol, mussarela e orégano", precos: { 'P': 46, 'M': 50, 'G': 60, 'GG': 65 } },
-            { id: 43, nome: "43 ROMEU E JULIETA", desc: "Mussarela e goiabada", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 44, nome: "44 SENSAÇÃO", desc: "Chocolate, granulado e morangos", precos: { 'P': 42, 'M': 48, 'G': 54, 'GG': 60 } },
-            { id: 45, nome: "45 TRILOUKA", desc: "Molho, presunto, bacon, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
-            { id: 46, nome: "46 VENEZA", desc: "Molho, calabresa, frango, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } }
+            { id: 1, nome: "AMERICANA", desc: "Molho, carne de sol, frango, cebola caramelizada, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 3, nome: "BACON", desc: "Molho, bacon, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 4, nome: "BACON 2", desc: "Molho, muçarela, bacon, rodelas de tomate, catupiry original e orégano", precos: { 'P': 37, 'M': 43, 'G': 49, 'GG': 55 } },
+            { id: 5, nome: "BAIANA", desc: "Molho, calabresa, muçarela, ovo, pimenta, cebola e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 6, nome: "BATATA PALHA", desc: "Molho, batata palha, calabresa moída, muçarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 7, nome: "BAURU", desc: "Molho, muçarela, presunto, tomate e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 8, nome: "BRIGADEIRO", desc: "Chocolate e granulado", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 10, nome: "CALABRESA C/ MUSSARELA", desc: "Molho, calabresa, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 11, nome: "CALAMIDADE", desc: "Molho, calabresa, frango, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 12, nome: "CARNE SECA C/ MUSSARELA", desc: "Molho, carne seca, muçarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 13, nome: "CAIPIRA", desc: "Molho, frango, milho, bacon, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 14, nome: "CAMARÃO", desc: "Molho, camarão, muçarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 65 } },
+            { id: 15, nome: "ESPANHOLA", desc: "Molho, presunto, calabresa, cebola, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 16, nome: "FRANBACON", desc: "Molho, frango, bacon, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 17, nome: "FRANGO C/ CATUPIRY", desc: "Molho, frango, catupiry e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 18, nome: "FRANGO 2", desc: "Molho, frango, bacon, catupiry, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 56 } },
+            { id: 19, nome: "FRANGO COM MUSSARELA", desc: "Molho, frango, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 20, nome: "FIORENTINA", desc: "Molho, frango, catupiry, milho e orégano", precos: { 'P': 35, 'M': 42, 'G': 47, 'GG': 53 } },
+            { id: 21, nome: "INTERATIVA", desc: "Escolha até 5 ingredientes", precos: { 'P': 47, 'M': 51, 'G': 61, 'GG': 67 } },
+            { id: 22, nome: "LOMBO", desc: "Molho, lombo canadense, muçarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 65 } },
+            { id: 23, nome: "MODA DA CASA", desc: "Molho, frango, milho, calabresa, bacon, mussarela e orégano", precos: { 'P': 39, 'M': 44, 'G': 51, 'GG': 56 } },
+            { id: 24, nome: "MODA DO PIZZAIOLO", desc: "Molho, presunto, frango, mussarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 25, nome: "MARGHERITA", desc: "Molho, mussarela, manjericão, tomate e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 26, nome: "MEXICANA", desc: "Molho, bacon, mussarela, milho e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 27, nome: "MILHO VERDE", desc: "Molho, milho, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 28, nome: "MODA", desc: "Molho, mussarela, calabresa, ovo, cebola e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 29, nome: "MODA 2", desc: "Molho, mussarela, calabresa, ovo, cebola, cheiro-verde e orégano", precos: { 'P': 38, 'M': 43, 'G': 50, 'GG': 55 } },
+            { id: 30, nome: "MUSSARELA", desc: "Molho, mussarela, tomate e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
+            { id: 31, nome: "NORDESTINA", desc: "Molho, carne seca, mussarela, tomate, cebola e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
+            { id: 32, nome: "NORDESTINA 2", desc: "Molho, mussarela, carne de sol, macaxeira frita, cebola e orégano", precos: { 'P': 39, 'M': 44, 'G': 51, 'GG': 56 } },
+            { id: 34, nome: "PEITO DE PERU", desc: "Molho, peito de peru, mussarela e orégano", precos: { 'P': 45, 'M': 50, 'G': 60, 'GG': 66 } },
+            { id: 35, nome: "PEITO DE PERU C/ CATUPIRY", desc: "Molho, peito de peru, catupiry e orégano", precos: { 'P': 45, 'M': 50, 'G': 55, 'GG': 66 } },
+            { id: 36, nome: "PEPPERONI", desc: "Molho, pepperoni, mussarela, parmesão e orégano", precos: { 'P': 45, 'M': 50, 'G': 55, 'GG': 66 } },
+            { id: 37, nome: "PRESTÍGIO", desc: "Leite condensado, coco e chocolate", precos: { 'P': 35, 'M': 41, 'G': 51, 'GG': 53 } },
+            { id: 38, nome: "PORTUGUESA", desc: "Molho, mussarela, presunto, cebola, ovo e orégano", precos: { 'P': 36, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 39, nome: "DOIS QUEIJOS", desc: "Molho, mussarela, catupiry e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 40, nome: "TRÊS QUEIJOS", desc: "Molho, mussarela, parmesão, catupiry e orégano", precos: { 'P': 37, 'M': 43, 'G': 50, 'GG': 55 } },
+            { id: 41, nome: "QUATRO QUEIJOS", desc: "Molho, mussarela, parmesão, catupiry, provolone e orégano", precos: { 'P': 39, 'M': 45, 'G': 52, 'GG': 58 } },
+            { id: 42, nome: "QUATRO ESTAÇÕES", desc: "Molho, calabresa, frango, presunto, carne de sol, mussarela e orégano", precos: { 'P': 46, 'M': 50, 'G': 60, 'GG': 65 } },
+            { id: 43, nome: "ROMEU E JULIETA", desc: "Mussarela e goiabada", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 44, nome: "SENSAÇÃO", desc: "Chocolate, granulado e morangos", precos: { 'P': 42, 'M': 48, 'G': 54, 'GG': 60 } },
+            { id: 45, nome: "TRILOUKA", desc: "Molho, presunto, bacon, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } },
+            { id: 46, nome: "VENEZA", desc: "Molho, calabresa, frango, mussarela e orégano", precos: { 'P': 35, 'M': 41, 'G': 47, 'GG': 53 } }
         ];
 
         let OUTROS_PRODUTOS = [
@@ -344,14 +345,13 @@
             }, 2000);
         });
 
-        // --- FUNÇÕES DE ADMIN ATUALIZADAS ---
-
+        // Funções Administrativas
         function openAdmin() {
             const pass = prompt("Digite a senha administrativa:");
             if(pass === "1234") {
                 document.getElementById('admin-modal').classList.remove('hidden');
                 
-                // 1. Renderizar Taxas de Entrega
+                // Taxas
                 document.getElementById('admin-delivery-fees').innerHTML = TAXAS_ENTREGA.map((t, i) => `
                     <div class="bg-stone-50 p-2 rounded border flex items-center justify-between">
                         <span class="text-xs font-bold uppercase text-stone-600">${t.bairro}</span>
@@ -361,7 +361,7 @@
                         </div>
                     </div>`).join('');
 
-                // 2. Renderizar Preços de Pizzas
+                // Preços Pizzas
                 document.getElementById('admin-flavor-prices').innerHTML = SABORES_PIZZA.map((s, i) => `
                     <div class="bg-stone-50 p-2 rounded border text-left">
                         <p class="font-bold text-[10px] uppercase text-stone-500 mb-1">${s.nome}</p>
@@ -373,7 +373,7 @@
                         </div>
                     </div>`).join('');
 
-                // 3. Renderizar Preços de Esfirras
+                // Preços Esfirras
                 let esfHtml = "";
                 for(let cat in ESFIRRAS) {
                     esfHtml += `<div class="text-[10px] font-black uppercase text-stone-400 mt-2 mb-1">${cat}</div>`;
@@ -393,35 +393,21 @@
         }
 
         function saveAdmin() {
-            // Salvar Taxas
-            TAXAS_ENTREGA.forEach((t, i) => {
-                t.taxa = parseFloat(document.getElementById(`fee-${i}`).value) || 0;
-            });
-
-            // Salvar Pizzas
+            TAXAS_ENTREGA.forEach((t, i) => { t.taxa = parseFloat(document.getElementById(`fee-${i}`).value) || 0; });
             SABORES_PIZZA.forEach((s, i) => {
                 s.precos.P = parseFloat(document.getElementById(`f-${i}-P`).value) || 0;
                 s.precos.M = parseFloat(document.getElementById(`f-${i}-M`).value) || 0;
                 s.precos.G = parseFloat(document.getElementById(`f-${i}-G`).value) || 0;
                 s.precos.GG = parseFloat(document.getElementById(`f-${i}-GG`).value) || 0;
             });
-
-            // Salvar Esfirras
             for(let cat in ESFIRRAS) {
-                ESFIRRAS[cat].forEach((s, i) => {
-                    s.preco = parseFloat(document.getElementById(`esf-${cat}-${i}`).value) || 0;
-                });
+                ESFIRRAS[cat].forEach((s, i) => { s.preco = parseFloat(document.getElementById(`esf-${cat}-${i}`).value) || 0; });
             }
-
-            renderMenu(); 
-            renderDeliveryOptions(); 
-            updateCartUI();
-            closeAdmin(); 
-            alert("✅ Todas as configurações foram salvas com sucesso!");
+            renderMenu(); renderDeliveryOptions(); updateCartUI(); closeAdmin();
+            alert("✅ Todas as configurações foram salvas!");
         }
 
-        // --- RESTANTE DAS FUNÇÕES DO SISTEMA (MANTIDAS) ---
-
+        // Lógica do Cardápio
         function renderMenu(cat = 'todas') {
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
@@ -451,7 +437,7 @@
                         <img src="https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" class="w-24 h-24 rounded-xl object-cover">
                         <div class="flex-1 text-left min-w-0">
                             <div class="flex justify-between items-center"><h3 class="font-bold text-sm uppercase">ESFIRRAS</h3><span class="text-green-600 font-bold">Vários Sabores</span></div>
-                             <p class="text-[10px] text-stone-400 mt-1">Escolha entre Tradicionais, Especiais e Doces</p>
+                             <p class="text-[10px] text-stone-400 mt-1">Tradicionais, Especiais e Doces</p>
                             <button onclick="openModal('esfirra')" class="mt-4 w-full bg-orange-700 text-white py-2 rounded-full font-bold text-xs flex items-center justify-center gap-2">
                                 <i class="fa fa-shopping-cart"></i> Escolher Sabores
                             </button>
@@ -470,30 +456,6 @@
                         <button onclick="addToCartDirect(${p.id})" class="w-full bg-stone-900 text-white py-2 rounded-xl text-xs font-bold hover:bg-orange-700 transition">Adicionar</button>
                     </div>
                 </div>`).join('');
-        }
-
-        function updateModalPrice() {
-            let total = 0;
-            if(curItem.type === 'pizza') {
-                const sabores = Object.values(curItem.selectedFlavors);
-                if(sabores.length > 0) total = Math.max(...sabores.map(s => s.price));
-                const bPreco = curItem.border ? curItem.border.precos[curItem.size] : 0;
-                total = (total + bPreco) * curItem.qty;
-            } else {
-                total = Object.values(curItem.selectedFlavors).reduce((acc, cur) => acc + (cur.price * cur.qty), 0);
-            }
-            document.getElementById('modal-pizza-price').innerText = `R$ ${total.toFixed(2)}`;
-        }
-
-        function togglePizzaSabor(id) {
-            if(curItem.selectedFlavors[id]) {
-                delete curItem.selectedFlavors[id];
-            } else {
-                if(Object.keys(curItem.selectedFlavors).length >= 2) return alert("Máximo 2 sabores!");
-                const s = SABORES_PIZZA.find(x => x.id === id);
-                curItem.selectedFlavors[id] = { name: s.nome, price: s.precos[curItem.size] };
-            }
-            updateModalPrice();
         }
 
         function openModal(type, size = '') {
@@ -537,6 +499,17 @@
             }
         }
 
+        function togglePizzaSabor(id) {
+            if(curItem.selectedFlavors[id]) {
+                delete curItem.selectedFlavors[id];
+            } else {
+                if(Object.keys(curItem.selectedFlavors).length >= 2) return alert("Máximo 2 sabores!");
+                const s = SABORES_PIZZA.find(x => x.id === id);
+                curItem.selectedFlavors[id] = { name: s.nome, price: s.precos[curItem.size] };
+            }
+            updateModalPrice();
+        }
+
         function updateEsfirraQty(id, delta, price, name) {
             if(!curItem.selectedFlavors[id]) curItem.selectedFlavors[id] = { name: name, price: price, qty: 0 };
             curItem.selectedFlavors[id].qty = Math.max(0, curItem.selectedFlavors[id].qty + delta);
@@ -545,19 +518,17 @@
             updateModalPrice();
         }
 
-        function confirmItem() {
-            const flavors = Object.values(curItem.selectedFlavors);
-            if(flavors.length === 0) return alert("Escolha pelo menos um sabor!");
+        function updateModalPrice() {
+            let total = 0;
             if(curItem.type === 'pizza') {
-                const nomes = flavors.map(s => s.name).join(' / ');
-                const precoBase = Math.max(...flavors.map(s => s.price));
-                const precoBorda = curItem.border ? curItem.border.precos[curItem.size] : 0;
-                const precoFinal = (precoBase + precoBorda) * curItem.qty;
-                cart.push({ name: `Pizza (${curItem.size}) - ${nomes}`, price: precoFinal, extra: curItem.border ? `Borda: ${curItem.border.nome}` : "Sem borda", obs: document.getElementById('pizza-obs').value, qty: curItem.qty });
+                const sabores = Object.values(curItem.selectedFlavors);
+                if(sabores.length > 0) total = Math.max(...sabores.map(s => s.price));
+                const bPreco = curItem.border ? curItem.border.precos[curItem.size] : 0;
+                total = (total + bPreco) * curItem.qty;
             } else {
-                flavors.forEach(s => { cart.push({ name: `Esfirra (${s.name})`, price: s.price * s.qty, extra: "", obs: document.getElementById('pizza-obs').value, qty: s.qty }); });
+                total = Object.values(curItem.selectedFlavors).reduce((acc, cur) => acc + (cur.price * cur.qty), 0);
             }
-            closePizzaModal(); updateCartUI();
+            document.getElementById('modal-pizza-price').innerText = `R$ ${total.toFixed(2)}`;
         }
 
         function renderBordas() {
@@ -577,14 +548,32 @@
         function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
         function filterCategory(cat) { renderMenu(cat); }
         function searchProduct() { renderMenu('todas'); }
-        function shareMenu() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('🍕 Confira o cardápio da '+STORE_NAME+': '+window.location.href)}`); }
+        function shareMenu() { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent('🍕 Cardápio '+STORE_NAME+': '+window.location.href)}`); }
+
+        function confirmItem() {
+            const flavors = Object.values(curItem.selectedFlavors);
+            if(flavors.length === 0) return alert("Escolha pelo menos um sabor!");
+            if(curItem.type === 'pizza') {
+                const nomes = flavors.map(s => s.name).join(' / ');
+                const precoBase = Math.max(...flavors.map(s => s.price));
+                const precoBorda = curItem.border ? curItem.border.precos[curItem.size] : 0;
+                const precoFinal = (precoBase + precoBorda) * curItem.qty;
+                cart.push({ name: `Pizza (${curItem.size}) - ${nomes}`, price: precoFinal, extra: curItem.border ? `Borda: ${curItem.border.nome}` : "Sem borda", obs: document.getElementById('pizza-obs').value, qty: curItem.qty });
+            } else {
+                flavors.forEach(s => { cart.push({ name: `Esfirra (${s.name})`, price: s.price * s.qty, extra: "", obs: document.getElementById('pizza-obs').value, qty: s.qty }); });
+            }
+            closePizzaModal(); updateCartUI();
+        }
+
         function addToCartDirect(id) {
             const p = OUTROS_PRODUTOS.find(x => x.id === id);
             cart.push({...p, qty: 1, extra: '', obs: ''});
             updateCartUI();
         }
+
         function removeItem(i) { cart.splice(i, 1); updateCartUI(); }
         function toggleModal(s) { document.getElementById('cart-modal').classList.toggle('hidden', !s); }
+
         function setPayment(m) { 
             paymentMethod = m; 
             document.querySelectorAll('.payment-btn').forEach(btn => btn.classList.remove('active'));
@@ -633,13 +622,11 @@
             msg += `🏘️ *Bairro:* ${d.value}\n`;
             msg += `💳 *Pag:* ${detPag}\n\n`;
             msg += `🛒 *ITENS:*\n`;
-            
             cart.forEach(i => {
                 msg += `• ${i.qty}x ${i.name}\n`;
                 if(i.extra) msg += `  └ _${i.extra}_\n`;
                 if(i.obs && i.obs.trim() !== "") msg += `  └ *Obs:* ${i.obs}\n`;
             });
-
             msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n`;
             msg += `*TOTAL: R$ ${(subtotal + fee).toFixed(2)}*`;
 
@@ -663,10 +650,7 @@
             }
         }
 
-        checkStoreStatus(); 
-        renderMenu(); 
-        renderDeliveryOptions(); 
-        setInterval(checkStoreStatus, 60000);
+        checkStoreStatus(); renderMenu(); renderDeliveryOptions(); setInterval(checkStoreStatus, 60000);
     </script>
 </body>
 </html>
