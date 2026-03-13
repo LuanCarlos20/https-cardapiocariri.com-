@@ -112,10 +112,12 @@
                     <span id="flavor-limit-text" class="text-xs text-stone-500">Escolha até 2</span>
                 </div>
                 <div id="sabores-lista" class="space-y-1 text-left"></div>
+                
                 <div id="borda-container" class="border-box text-left">
-                    <p class="font-bold text-[10px] uppercase mb-3 tracking-widest text-stone-600" id="borda-titulo">BORDAS RECHEADAS</p>
+                    <p class="font-bold text-[10px] uppercase mb-3 tracking-widest text-stone-600">BORDAS RECHEADAS</p>
                     <div id="bordas-lista" class="space-y-3"></div>
                 </div>
+
                 <div class="text-left">
                     <label class="font-bold text-sm">Observação</label>
                     <textarea id="pizza-obs" class="w-full border rounded-xl p-3 mt-1 outline-none focus:ring-1 focus:ring-green-500" placeholder="Ex: Sem cebola..."></textarea>
@@ -147,12 +149,18 @@
             <div class="space-y-6">
                 <section>
                     <h3 class="font-bold border-b mb-2">Preços das Pizzas</h3>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-2 gap-2" id="admin-prices-pizza">
                         <div>P: <input type="number" id="price-P" class="border p-1 w-full" value="30"></div>
                         <div>M: <input type="number" id="price-M" class="border p-1 w-full" value="35"></div>
                         <div>G: <input type="number" id="price-G" class="border p-1 w-full" value="40"></div>
                         <div>GG: <input type="number" id="price-GG" class="border p-1 w-full" value="50"></div>
                     </div>
+                </section>
+
+                <section>
+                    <h3 class="font-bold border-b mb-2">Preços do Cardápio (Bebidas/Geral)</h3>
+                    <div id="admin-other-prices" class="space-y-2 max-h-40 overflow-y-auto border p-2 rounded">
+                        </div>
                 </section>
 
                 <section>
@@ -220,7 +228,6 @@
         const WHATSAPP_NUMBER = "5588992791644";
         const STORE_NAME = "Pizzaria A Portuguesa";
         
-        // CONFIGURAÇÕES EDITÁVEIS (ADMIN)
         let PRECOS_PIZZA = { 'P': 30, 'M': 35, 'G': 40, 'GG': 50 };
         let TAXAS_ENTREGA = [
             { bairro: "Centro", taxa: 3.00 },
@@ -234,51 +241,48 @@
         ];
 
         const SABORES_PIZZA = [
-            { id: 1, nome: "01 americana", preco: 36, desc: "molho, presunto, mussarela, ovos, bacon e orégano" },
-            { id: 2, nome: "02 atum", preco: 31, desc: "molho, atum ralado, cebola e orégano" },
-            { id: 3, nome: "03 bacon", preco: 33, desc: "molho, mussarela, bacon e orégano" },
-            { id: 10, nome: "10 calabresa com mussarela", preco: 33, desc: "molho, mussarela, calabresa e orégano" }
+            { id: 1, nome: "01 americana", desc: "molho, presunto, mussarela, ovos, bacon e orégano" },
+            { id: 2, nome: "02 atum", desc: "molho, atum ralado, cebola e orégano" },
+            { id: 3, nome: "03 bacon", desc: "molho, mussarela, bacon e orégano" },
+            { id: 10, nome: "10 calabresa com mussarela", desc: "molho, mussarela, calabresa e orégano" }
         ];
 
-        const ESFIRRAS = {
-            "Tradicionais (R$ 6,00)": [
+        let ESFIRRAS = {
+            "Tradicionais": [
                 { id: 101, nome: "Carne", preco: 6 },
                 { id: 102, nome: "Queijo", preco: 6 },
                 { id: 103, nome: "Frango", preco: 6 }
             ],
-            "Especiais (R$ 7,50)": [
+            "Especiais": [
                 { id: 201, nome: "Carne com Queijo", preco: 7.5 },
                 { id: 202, nome: "Frango com Catupiry", preco: 7.5 },
                 { id: 203, nome: "Calabresa com Queijo", preco: 7.5 }
-            ],
-            "Doces (R$ 8,00)": [
-                { id: 301, nome: "Chocolate", preco: 8 },
-                { id: 302, nome: "Romeu e Julieta", preco: 8 },
-                { id: 303, nome: "Banana com Canela", preco: 8 }
             ]
         };
 
         const BORDAS = [
+            { nome: "Sem Borda", preco: 0 },
             { nome: "cheddar", preco: 7 },
             { nome: "catupiry", preco: 7 },
             { nome: "catupiry original", preco: 9 },
             { nome: "chocolate", preco: 8 }
         ];
 
-        const OUTROS_PRODUTOS = [];
-        for(let i=401; i<=410; i++) OUTROS_PRODUTOS.push({ id: i, cat: 'bebidas', name: `Bebida ${i-400}`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" });
+        let OUTROS_PRODUTOS = [
+            { id: 401, cat: 'bebidas', name: `Coca-Cola 2L`, price: 12.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" },
+            { id: 402, cat: 'bebidas', name: `Guaraná 2L`, price: 10.00, desc: "Gelada.", img: "https://matafoomi.com.br/images/item/180b57d13db78068761719a85d248ccd871cef05.webp" }
+        ];
 
         let cart = [];
         let curItem = { type: '', size: '', selectedFlavors: {}, border: null, qty: 1 };
         let paymentMethod = "";
 
-        // TELA DE LOADING
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 800);
-            }, 5000);
+            }, 2000);
         });
 
         function renderMenu(cat = 'todas') {
@@ -306,7 +310,7 @@
                     <img src="https://images.unsplash.com/photo-1628191139360-4083564d03fd?w=200" class="w-24 h-24 rounded-xl object-cover">
                     <div class="flex-1 text-left min-w-0">
                         <div class="flex justify-between items-center"><h3 class="font-bold text-sm uppercase">ESFIRRAS</h3><span class="text-green-600 font-bold">Vários Sabores</span></div>
-                         <p class="text-[10px] text-stone-400 mt-1">Tradicionais, Especiais e Doces</p>
+                         <p class="text-[10px] text-stone-400 mt-1">Tradicionais e Especiais</p>
                         <button onclick="openModal('esfirra')" class="mt-4 w-full bg-orange-700 text-white py-2 rounded-full font-bold text-xs flex items-center justify-center gap-2">
                             <i class="fa fa-shopping-cart"></i> Escolher Sabores
                         </button>
@@ -326,11 +330,22 @@
                 </div>`).join('');
         }
 
-        // --- FUNÇÕES ADMIN ---
+        // Admin Editável para todo o cardápio
         function openAdmin() {
             const pass = prompt("Digite a senha administrativa:");
             if(pass === "1234") {
                 document.getElementById('admin-modal').classList.remove('hidden');
+                
+                // Preços Outros Produtos
+                const otherList = document.getElementById('admin-other-prices');
+                otherList.innerHTML = OUTROS_PRODUTOS.map((p, i) => `
+                    <div class="flex gap-2 items-center text-xs">
+                        <span class="flex-1">${p.name}</span>
+                        <input type="number" id="other-price-${i}" class="border w-20 p-1" value="${p.price}">
+                    </div>
+                `).join('');
+
+                // Taxas Entrega
                 const list = document.getElementById('admin-delivery-list');
                 list.innerHTML = TAXAS_ENTREGA.map((t, i) => `
                     <div class="flex gap-2 items-center text-xs">
@@ -341,14 +356,16 @@
             } else { alert("Senha incorreta!"); }
         }
 
-        function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
-
         function saveAdmin() {
             PRECOS_PIZZA.P = document.getElementById('price-P').value;
             PRECOS_PIZZA.M = document.getElementById('price-M').value;
             PRECOS_PIZZA.G = document.getElementById('price-G').value;
             PRECOS_PIZZA.GG = document.getElementById('price-GG').value;
             
+            OUTROS_PRODUTOS.forEach((p, i) => {
+                p.price = parseFloat(document.getElementById(`other-price-${i}`).value);
+            });
+
             TAXAS_ENTREGA.forEach((t, i) => {
                 t.taxa = parseFloat(document.getElementById(`fee-${i}`).value);
             });
@@ -356,24 +373,15 @@
             renderMenu();
             renderDeliveryOptions();
             closeAdmin();
-            alert("Dados salvos com sucesso!");
+            alert("Preços e taxas atualizados!");
         }
 
-        function renderDeliveryOptions() {
-            const select = document.getElementById('delivery-location');
-            select.innerHTML = '<option value="0" data-fee="0">Selecione seu bairro...</option>';
-            TAXAS_ENTREGA.forEach(t => {
-                select.innerHTML += `<option value="${t.bairro}" data-fee="${t.taxa}">${t.bairro} (R$ ${t.taxa.toFixed(2)})</option>`;
-            });
-        }
+        function closeAdmin() { document.getElementById('admin-modal').classList.add('hidden'); }
 
-        // --- RESTANTE DO CODIGO ORIGINAL ---
         function openModal(type, size = '') {
-            curItem = { type, size, selectedFlavors: {}, border: null, qty: 1 };
+            curItem = { type, size, selectedFlavors: {}, border: BORDAS[0], qty: 1 };
             document.getElementById('modal-pizza-title').innerText = type === 'pizza' ? `PIZZA (${size})` : `ESFIRRAS`;
             document.getElementById('borda-container').classList.toggle('hidden', type !== 'pizza');
-            document.getElementById('qty-container-global').classList.toggle('hidden', type !== 'pizza');
-            document.getElementById('flavor-limit-text').innerText = type === 'pizza' ? 'Escolha até 2' : 'Selecione as quantidades';
             document.getElementById('pizza-qty').innerText = "1";
             document.getElementById('pizza-obs').value = "";
             renderSaboresModal();
@@ -415,7 +423,7 @@
             } else {
                 if(Object.keys(curItem.selectedFlavors).length >= 2) { renderSaboresModal(); return alert("Máximo 2 sabores!"); }
                 const s = SABORES_PIZZA.find(x => x.id === id);
-                curItem.selectedFlavors[id] = { name: s.nome, price: s.preco, qty: 1 };
+                curItem.selectedFlavors[id] = { name: s.nome, qty: 1 };
             }
             updateModalPrice();
         }
@@ -440,6 +448,19 @@
             document.getElementById('modal-pizza-price').innerText = `R$ ${total.toFixed(2)}`;
         }
 
+        function renderBordas() {
+            document.getElementById('bordas-lista').innerHTML = BORDAS.map((b, i) => `
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="borda" id="borda-${i}" onchange="setBorda(${i})" ${i === 0 ? 'checked' : ''} class="w-5 h-5 accent-green-600">
+                        <label for="borda-${i}" class="text-sm uppercase">${b.nome}</label>
+                    </div>
+                    <span class="text-sm font-bold">${b.preco > 0 ? '+ R$ '+b.preco.toFixed(2) : 'Grátis'}</span>
+                </div>`).join('');
+        }
+
+        function setBorda(index) { curItem.border = BORDAS[index]; updateModalPrice(); }
+
         function confirmItem() {
             const flavorsCount = Object.keys(curItem.selectedFlavors).length;
             if(flavorsCount === 0) return alert("Escolha pelo menos um sabor!");
@@ -450,7 +471,7 @@
                 cart.push({
                     name: `Pizza (${curItem.size}) - ${nomes}`,
                     price: precoFinal,
-                    extra: curItem.border ? `Borda: ${curItem.border.nome}` : "Sem borda",
+                    extra: curItem.border.nome !== "Sem Borda" ? `Borda: ${curItem.border.nome}` : "",
                     obs: document.getElementById('pizza-obs').value,
                     qty: curItem.qty
                 });
@@ -469,24 +490,9 @@
             updateCartUI();
         }
 
-        function renderBordas() {
-            document.getElementById('bordas-lista').innerHTML = BORDAS.map(b => `
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <input type="radio" name="borda" onchange="setBorda('${b.nome}')" class="w-5 h-5 accent-green-600">
-                        <span class="text-sm uppercase">${b.nome}</span>
-                    </div>
-                    <span class="text-sm font-bold">R$ ${b.preco.toFixed(2)}</span>
-                </div>`).join('');
-        }
-        function setBorda(nome) { curItem.border = BORDAS.find(b => b.nome === nome); updateModalPrice(); }
         function updateQty(v) { curItem.qty = Math.max(1, curItem.qty + v); document.getElementById('pizza-qty').innerText = curItem.qty; updateModalPrice(); }
         function closePizzaModal() { document.getElementById('pizza-modal').classList.add('hidden'); }
         function filterCategory(cat) { renderMenu(cat); }
-        function shareMenu() {
-            const msg = encodeURIComponent(`🍕 Confira o cardápio da ${STORE_NAME}: ` + window.location.href);
-            window.open(`https://api.whatsapp.com/send?text=${msg}`);
-        }
         function addToCartDirect(id) {
             const p = OUTROS_PRODUTOS.find(x => x.id === id);
             cart.push({...p, qty: 1, extra: '', obs: ''});
@@ -500,6 +506,13 @@
             document.getElementById(`pay-${m}`).classList.add('active'); 
             document.getElementById('troco-container').classList.toggle('hidden', m !== 'Dinheiro');
             document.getElementById('cartao-container').classList.toggle('hidden', m !== 'Cartao');
+        }
+        function renderDeliveryOptions() {
+            const select = document.getElementById('delivery-location');
+            select.innerHTML = '<option value="0" data-fee="0">Selecione seu bairro...</option>';
+            TAXAS_ENTREGA.forEach(t => {
+                select.innerHTML += `<option value="${t.bairro}" data-fee="${t.taxa}">${t.bairro} (R$ ${t.taxa.toFixed(2)})</option>`;
+            });
         }
         function updateCartUI() {
             const d = document.getElementById('delivery-location');
@@ -553,6 +566,11 @@
                 logo.className = `w-20 h-20 rounded-full object-cover border-4 shadow-xl mb-2 transition-all animate-pulse-red`;
                 document.getElementById('status-texto').innerText = "Fechado Agora";
             }
+        }
+
+        function shareMenu() {
+            const msg = encodeURIComponent(`🍕 Confira o cardápio da ${STORE_NAME}: ` + window.location.href);
+            window.open(`https://api.whatsapp.com/send?text=${msg}`);
         }
 
         function searchProduct() {
