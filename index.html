@@ -506,4 +506,72 @@
         function renderDeliveryOptions() {
             const select = document.getElementById('delivery-location');
             select.innerHTML = '<option value="0" data-fee="0">Selecione seu bairro...</option>';
-            TAXAS_ENTREGA.forEach(t => { select.innerHTML += `<option value="${t.bairro}"
+            TAXAS_ENTREGA.forEach(t => { select.innerHTML += `<option value="${t.bairro}" data-fee="${t.taxa}">${t.bairro} (R$ ${t.taxa.toFixed(2)})</option>`; });
+        }
+        function updateCartUI() {
+            const d = document.getElementById('delivery-location');
+            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee') || 0);
+            const subtotal = cart.reduce((a, c) => a + c.price, 0);
+            document.getElementById('cart-total').innerText = `R$ ${(subtotal + fee).toFixed(2)}`;
+            document.getElementById('summary-total').innerText = `R$ ${(subtotal + fee).toFixed(2)}`;
+            document.getElementById('cart-items').innerHTML = cart.map((item, i) => `
+                <div class="bg-stone-50 p-3 rounded-xl border mb-3 text-left">
+                    <div class="flex justify-between items-center">
+                        <div><p class="font-bold text-sm">${item.qty}x ${item.name}</p><p class="text-[10px] text-stone-500">${item.extra} ${item.obs ? '| '+item.obs : ''}</p><p class="text-xs font-bold text-orange-700">R$ ${item.price.toFixed(2)}</p></div>
+                        <button onclick="removeItem(${i})" class="text-red-400 p-2"><i class="fa fa-trash"></i></button>
+                    </div>
+                </div>`).join('');
+        }
+
+        // --- FUNÇÃO DE ENVIO CORRIGIDA COM OBSERVAÇÃO ---
+        function sendOrder() {
+            const d = document.getElementById('delivery-location'), n = document.getElementById('cust-name').value, a = document.getElementById('cust-address').value;
+            if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) return alert("Preencha todos os campos!");
+            
+            const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
+            const subtotal = cart.reduce((acc, cur) => acc + cur.price, 0);
+            
+            let detPag = paymentMethod;
+            if(paymentMethod === 'Dinheiro') detPag += ` (Troco: ${document.getElementById('valor-troco').value || 'Não'})`;
+            if(paymentMethod === 'Cartao') detPag += ` (${document.getElementById('tipo-cartao').value})`;
+
+            let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
+            msg += `👤 *Cliente:* ${n}\n`;
+            msg += `📍 *End:* ${a}\n`;
+            msg += `🏘️ *Bairro:* ${d.value}\n`;
+            msg += `💳 *Pag:* ${detPag}\n\n`;
+            msg += `🛒 *ITENS:*\n`;
+            
+            cart.forEach(i => {
+                msg += `• ${i.qty}x ${i.name}\n`;
+                if(i.extra) msg += `  └ _${i.extra}_\n`;
+                // CORREÇÃO: ADICIONANDO A OBSERVAÇÃO NA MENSAGEM DO WHATSAPP
+                if(i.obs && i.obs.trim() !== "") msg += `  └ *Obs:* ${i.obs}\n`;
+            });
+
+            msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n`;
+            msg += `*TOTAL: R$ ${(subtotal + fee).toFixed(2)}*`;
+
+            window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
+        }
+
+        function checkStoreStatus() {
+            const now = new Date();
+            const diaSemana = now.getDay(); const tempoAtual = now.getHours() * 60 + now.getMinutes();
+            const aberto = (tempoAtual >= 1080 && tempoAtual < 1410) && (diaSemana !== 2);
+            const div = document.getElementById('status-loja');
+            const logo = document.getElementById('logo-pizzaria');
+            if(aberto) {
+                div.className = "mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 bg-green-600 animate-pulse-green";
+                logo.className = "w-20 h-20 rounded-full object-cover border-4 animate-pulse-green";
+                document.getElementById('status-texto').innerText = "Aberto Agora";
+            } else {
+                div.className = "mt-2 text-white px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 bg-red-600 animate-pulse-red";
+                logo.className = "w-20 h-20 rounded-full object-cover border-4 animate-pulse-red";
+                document.getElementById('status-texto').innerText = "Fechado Agora";
+            }
+        }
+        checkStoreStatus(); renderMenu(); renderDeliveryOptions(); setInterval(checkStoreStatus, 60000);
+    </script>
+</body>
+</html>
