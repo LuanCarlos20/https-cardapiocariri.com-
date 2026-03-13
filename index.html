@@ -48,7 +48,7 @@
         .border-box { background: #f9f9f9; border: 1px solid #eee; border-radius: 12px; padding: 15px; }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-900 pb-24">
+<body class="bg-stone-50 text-stone-900 pb-32">
 
     <div id="splash-screen">
         <img src="https://matafoomi.com.br/images/template/d311c8036e92213f64f1b35b92d1e2b4815c8ffa.jpg" class="w-32 h-32 rounded-full border-4 border-orange-600 mb-4 animate-bounce">
@@ -106,7 +106,7 @@
             <div class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
                 <div id="modal-pizza-price" class="price-green">R$ 0,00</div>
                 <div id="flavor-header" class="flex justify-between items-center border-b pb-1">
-                    <span class="font-bold text-sm">Escolha os Sabores</span>
+                    <span class="font-bold text-sm" id="flavor-instruction">Escolha os Sabores</span>
                     <span id="flavor-limit-text" class="text-xs text-stone-500">Escolha até 2</span>
                 </div>
                 <div id="sabores-lista" class="space-y-1 text-left"></div>
@@ -171,14 +171,21 @@
         </div>
     </div>
 
-    <footer class="fixed bottom-0 w-full bg-white border-t border-stone-200 p-4 flex items-center justify-between z-50">
-        <div class="flex flex-col text-left">
-            <span class="text-[10px] text-stone-500 uppercase font-bold tracking-widest">Total + Entrega</span>
-            <span class="text-xl font-bold text-orange-800" id="cart-total">R$ 0,00</span>
+    <footer class="fixed bottom-0 w-full bg-white border-t border-stone-200 p-4 z-50">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex flex-col text-left">
+                <span class="text-[10px] text-stone-500 uppercase font-bold tracking-widest">Total + Entrega</span>
+                <span class="text-xl font-bold text-orange-800" id="cart-total">R$ 0,00</span>
+            </div>
+            <button onclick="toggleModal(true)" class="bg-orange-700 hover:bg-orange-800 text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg">
+                Ver Pedido <i class="fa fa-shopping-basket"></i>
+            </button>
         </div>
-        <button onclick="toggleModal(true)" class="bg-orange-700 hover:bg-orange-800 text-white px-8 py-3.5 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg">
-            Ver Pedido <i class="fa fa-shopping-basket"></i>
-        </button>
+        <div class="w-full text-center mt-2 pt-2 border-t border-stone-100">
+            <a href="https://www.instagram.com/lu4ncarlos/" target="_blank" class="text-[11px] font-semibold text-stone-400 hover:text-orange-600 transition-all">
+                Dev <span class="text-stone-600">lu4ncarlos</span> <i class="fab fa-instagram ml-1"></i>
+            </a>
+        </div>
     </footer>
 
     <div id="cart-modal" class="fixed inset-0 bg-black/70 z-[60] hidden flex items-center justify-center p-4 backdrop-blur-sm">
@@ -232,7 +239,6 @@
             { bairro: "Arajara", taxa: 8.00 }, { bairro: "Outros", taxa: 10.00 }
         ];
 
-        // Sabores de Pizza sem numeração
         let SABORES_PIZZA = [
             { id: 1, nome: "AMERICANA", desc: "Molho, carne de sol, frango, cebola caramelizada, muçarela e orégano", precos: { 'P': 36, 'M': 42, 'G': 48, 'GG': 54 } },
             { id: 3, nome: "BACON", desc: "Molho, bacon, muçarela e orégano", precos: { 'P': 33, 'M': 39, 'G': 45, 'GG': 51 } },
@@ -345,13 +351,10 @@
             }, 2000);
         });
 
-        // Funções Administrativas
         function openAdmin() {
             const pass = prompt("Digite a senha administrativa:");
             if(pass === "1234") {
                 document.getElementById('admin-modal').classList.remove('hidden');
-                
-                // Taxas
                 document.getElementById('admin-delivery-fees').innerHTML = TAXAS_ENTREGA.map((t, i) => `
                     <div class="bg-stone-50 p-2 rounded border flex items-center justify-between">
                         <span class="text-xs font-bold uppercase text-stone-600">${t.bairro}</span>
@@ -360,8 +363,6 @@
                             <input type="number" id="fee-${i}" value="${t.taxa.toFixed(2)}" step="0.50" class="w-16 border p-1 text-xs font-bold text-orange-700 rounded">
                         </div>
                     </div>`).join('');
-
-                // Preços Pizzas
                 document.getElementById('admin-flavor-prices').innerHTML = SABORES_PIZZA.map((s, i) => `
                     <div class="bg-stone-50 p-2 rounded border text-left">
                         <p class="font-bold text-[10px] uppercase text-stone-500 mb-1">${s.nome}</p>
@@ -372,8 +373,6 @@
                             <div><label class="text-[8px] block">GG</label><input type="number" id="f-${i}-GG" value="${s.precos.GG}" class="w-full border p-1 text-xs rounded"></div>
                         </div>
                     </div>`).join('');
-
-                // Preços Esfirras
                 let esfHtml = "";
                 for(let cat in ESFIRRAS) {
                     esfHtml += `<div class="text-[10px] font-black uppercase text-stone-400 mt-2 mb-1">${cat}</div>`;
@@ -407,12 +406,10 @@
             alert("✅ Todas as configurações foram salvas!");
         }
 
-        // Lógica do Cardápio
         function renderMenu(cat = 'todas') {
             const container = document.getElementById('menu-container');
             container.innerHTML = "";
             const search = document.getElementById('search-input').value.toLowerCase();
-
             if(cat === 'todas' || cat === 'pizzas') {
                 ['P', 'M', 'G', 'GG'].forEach(s => {
                     if("pizza".includes(search) || s.toLowerCase().includes(search)) {
@@ -429,7 +426,6 @@
                     }
                 });
             }
-
             if(cat === 'todas' || cat === 'esfirras') {
                 if("esfirras".includes(search)) {
                     container.innerHTML += `
@@ -445,7 +441,6 @@
                     </div>`;
                 }
             }
-
             const filteredBebidas = OUTROS_PRODUTOS.filter(p => (cat === 'todas' || p.cat === cat) && p.name.toLowerCase().includes(search));
             container.innerHTML += filteredBebidas.map(p => `
                 <div class="bg-white p-3 rounded-2xl shadow-sm border flex gap-4 items-center">
@@ -461,6 +456,8 @@
         function openModal(type, size = '') {
             curItem = { type, size, selectedFlavors: {}, border: null, qty: 1 };
             document.getElementById('modal-pizza-title').innerText = type === 'pizza' ? `PIZZA (${size})` : `ESFIRRAS`;
+            document.getElementById('flavor-instruction').innerText = type === 'pizza' ? "Escolha os Sabores" : "Escolha a Quantidade";
+            document.getElementById('flavor-limit-text').innerText = type === 'pizza' ? "Escolha até 2" : "Quantidade livre";
             document.getElementById('borda-container').classList.toggle('hidden', type !== 'pizza');
             document.getElementById('qty-container-global').classList.toggle('hidden', type !== 'pizza');
             document.getElementById('pizza-qty').innerText = "1";
@@ -608,14 +605,11 @@
         function sendOrder() {
             const d = document.getElementById('delivery-location'), n = document.getElementById('cust-name').value, a = document.getElementById('cust-address').value;
             if(!cart.length || d.value === "0" || !paymentMethod || !n || !a) return alert("Preencha todos os campos!");
-            
             const fee = parseFloat(d.options[d.selectedIndex].getAttribute('data-fee'));
             const subtotal = cart.reduce((acc, cur) => acc + cur.price, 0);
-            
             let detPag = paymentMethod;
             if(paymentMethod === 'Dinheiro') detPag += ` (Troco: ${document.getElementById('valor-troco').value || 'Não'})`;
             if(paymentMethod === 'Cartao') detPag += ` (${document.getElementById('tipo-cartao').value})`;
-
             let msg = `*PEDIDO - ${STORE_NAME}*\n\n`;
             msg += `👤 *Cliente:* ${n}\n`;
             msg += `📍 *End:* ${a}\n`;
@@ -629,7 +623,6 @@
             });
             msg += `\n*Entrega:* R$ ${fee.toFixed(2)}\n`;
             msg += `*TOTAL: R$ ${(subtotal + fee).toFixed(2)}*`;
-
             window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`);
         }
 
