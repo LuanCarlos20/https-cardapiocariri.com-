@@ -1,63 +1,103 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Player IPTV</title>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <style>
-    body {
-      background: #000;
-      color: #fff;
-      text-align: center;
-      font-family: Arial;
-    }
-    video {
-      width: 100%;
-      max-width: 800px;
-      margin-top: 20px;
-    }
-    input {
-      width: 80%;
-      padding: 10px;
-      margin-top: 20px;
-    }
-    button {
-      padding: 10px;
-      margin-top: 10px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>IPTV Player</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<style>
+body {
+  background: #111;
+  color: #fff;
+  font-family: Arial;
+  text-align: center;
+}
+
+#channels {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 20px;
+}
+
+.channel {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  cursor: pointer;
+}
+
+.channel:hover {
+  background: #222;
+}
+
+video {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+}
+</style>
 </head>
+
 <body>
 
-<h2>📺 Player IPTV</h2>
+<h2>📺 Meu IPTV Player</h2>
 
-<input type="text" id="url" placeholder="Cole o link M3U8 aqui">
-<br>
-<button onclick="playVideo()">Assistir</button>
+<button onclick="loadM3U()">Carregar Lista</button>
+
+<div id="channels"></div>
 
 <video id="video" controls></video>
 
 <script>
-function playVideo() {
-  var video = document.getElementById('video');
-  var videoSrc = document.getElementById('url').value;
+
+const m3uUrl = "http://iptvperfeito.ddns.net:25461/get.php?username=197388121&password=197388121&type=m3u_plus&output=ts";
+
+async function loadM3U() {
+  try {
+    const response = await fetch(m3uUrl);
+    const text = await response.text();
+    parseM3U(text);
+  } catch (e) {
+    alert("Erro ao carregar lista (CORS provavelmente)");
+  }
+}
+
+function parseM3U(data) {
+  const lines = data.split("\n");
+  const container = document.getElementById("channels");
+  container.innerHTML = "";
+
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].startsWith("#EXTINF")) {
+      const name = lines[i].split(",")[1];
+      const url = lines[i + 1];
+
+      const div = document.createElement("div");
+      div.className = "channel";
+      div.innerText = name;
+
+      div.onclick = () => play(url);
+
+      container.appendChild(div);
+    }
+  }
+}
+
+function play(url) {
+  const video = document.getElementById("video");
 
   if (Hls.isSupported()) {
-    var hls = new Hls();
-    hls.loadSource(videoSrc);
+    const hls = new Hls();
+    hls.loadSource(url);
     hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, function() {
-      video.play();
-    });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = videoSrc;
-    video.addEventListener('loadedmetadata', function() {
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
       video.play();
     });
   } else {
-    alert("Seu navegador não suporta esse formato!");
+    video.src = url;
+    video.play();
   }
 }
+
 </script>
 
 </body>
