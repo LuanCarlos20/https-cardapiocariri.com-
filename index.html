@@ -3,129 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPTV Player Pro</title>
+    <title>IPTV Auto Player</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body { background-color: #0a0e14; color: white; font-family: sans-serif; }
-        .card-menu {
-            border-radius: 15px; height: 200px; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; cursor: pointer; transition: 0.3s;
-            margin-bottom: 20px; border: none;
+        body { background: #0f172a; color: white; font-family: 'Segoe UI', sans-serif; height: 100-vh; overflow: hidden; }
+        .main-layout { display: grid; grid-template-columns: 350px 1fr; height: 100vh; }
+        
+        /* Sidebar de Canais */
+        .sidebar { background: #1e293b; border-right: 1px solid #334155; display: flex; flex-direction: column; }
+        .search-box { padding: 15px; background: #0f172a; }
+        .channel-list { overflow-y: auto; flex-grow: 1; }
+        .channel-item { 
+            padding: 12px 20px; border-bottom: 1px solid #334155; cursor: pointer; 
+            transition: 0.2s; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        .card-menu:hover { transform: scale(1.03); filter: brightness(1.2); }
-        .bg-live { background: linear-gradient(135deg, #00c6ff, #0072ff); }
-        .bg-movies { background: linear-gradient(135deg, #f12711, #f5af19); }
-        .bg-series { background: linear-gradient(135deg, #654ea3, #eaafc8); }
+        .channel-item:hover { background: #334155; color: #38bdf8; }
+        .channel-item.active { background: #0284c7; color: white; font-weight: bold; }
+
+        /* Área do Vídeo */
+        .content { display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; position: relative; }
+        video { width: 100%; height: 100%; object-fit: contain; }
+        .overlay-info { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 8px; pointer-events: none; }
         
-        #player-screen { display: none; padding: 20px; }
-        video { width: 100%; background: #000; border-radius: 8px; aspect-ratio: 16/9; }
-        
-        .list-group { max-height: 60vh; overflow-y: auto; background: #161b22; }
-        .list-group-item { background: transparent; color: white; border-color: #30363d; cursor: pointer; }
-        .list-group-item:hover { background: #21262d; }
-        
-        .error-msg { color: #ff6b6b; padding: 10px; border: 1px solid #ff6b6b; border-radius: 5px; display: none; }
+        /* Loading */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #38bdf8; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items: center mb-4">
-        <h2>Smarters Web <small style="font-size: 12px; color: #888;">v2.0</small></h2>
-        <div id="timer"></div>
-    </div>
+<div id="loader">
+    <div class="spinner mb-3"></div>
+    <p>Sincronizando Lista IPTV...</p>
+</div>
 
-    <div id="setup-helper" class="error-msg mb-4">
-        <strong>Atenção:</strong> A lista não pôde ser carregada. <br>
-        1. Certifique-se de que está usando a extensão <b>"Allow CORS"</b> no navegador.<br>
-        2. Se estiver no Chrome, clique no ícone do cadeado (ao lado da URL) e permita "Conteúdo Inseguro".
-    </div>
-
-    <div id="main-menu" class="row text-center">
-        <div class="col-md-4" onclick="toggleView('LIVE')">
-            <div class="card-menu bg-live"><h3>📺 LIVE TV</h3></div>
+<div class="main-layout">
+    <div class="sidebar">
+        <div class="search-box">
+            <h5 class="mb-3">Smarters Web Auto</h5>
+            <input type="text" id="search" class="form-control form-control-sm bg-dark text-white border-secondary" placeholder="Buscar canal..." onkeyup="filter()">
         </div>
-        <div class="col-md-4" onclick="toggleView('MOVIES')">
-            <div class="card-menu bg-movies"><h3>🎬 FILMES</h3></div>
-        </div>
-        <div class="col-md-4" onclick="toggleView('SERIES')">
-            <div class="card-menu bg-series"><h3>🎞️ SÉRIES</h3></div>
-        </div>
-        <p id="load-status">Carregando canais...</p>
-    </div>
-
-    <div id="player-screen">
-        <button class="btn btn-sm btn-secondary mb-3" onclick="backToMenu()">⬅ Voltar</button>
-        <div class="row">
-            <div class="col-lg-8">
-                <video id="main-video" controls autoplay></video>
-                <h4 id="video-title" class="mt-2"></h4>
+        <div class="channel-list" id="list">
             </div>
-            <div class="col-lg-4">
-                <input type="text" id="search" class="form-control mb-2" placeholder="Buscar canal..." onkeyup="filterChannels()">
-                <div class="list-group" id="channel-list"></div>
-            </div>
-        </div>
+    </div>
+
+    <div class="content">
+        <div class="overlay-info" id="playing-now">Selecione um canal</div>
+        <video id="video" controls autoplay></video>
     </div>
 </div>
 
 <script>
-    const URL_LISTA = "http://iptvperfeito.ddns.net:25461/get.php?username=197388121&password=197388121&type=m3u_plus&output=ts";
-    let canais = [];
-    const video = document.getElementById('main-video');
-    let hls = new Hls();
+    const M3U_URL = "http://iptvperfeito.ddns.net:25461/get.php?username=197388121&password=197388121&type=m3u_plus&output=ts";
+    let channels = [];
+    const video = document.getElementById('video');
+    const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
 
-    // 1. Buscar a lista
-    async function carregarLista() {
+    async function init() {
         try {
-            const res = await fetch(URL_LISTA);
-            if (!res.ok) throw new Error();
-            const text = await res.text();
-            parsearM3U(text);
-            document.getElementById('load-status').innerHTML = `✅ ${canais.length} Canais prontos.`;
-        } catch (err) {
-            document.getElementById('load-status').style.display = 'none';
-            document.getElementById('setup-helper').style.display = 'block';
-            console.error("Erro de CORS ou Conexão:", err);
+            // Tenta carregar a lista
+            const res = await fetch(M3U_URL);
+            const data = await res.text();
+            parse(data);
+            
+            // Esconde o loader e renderiza
+            document.getElementById('loader').style.display = 'none';
+            render(channels);
+        } catch (e) {
+            document.querySelector('#loader p').innerHTML = "<span class='text-danger'>Erro de Conexão (CORS).<br>Ative a extensão 'Allow CORS' no navegador.</span>";
         }
     }
 
-    // 2. Processar texto M3U
-    function parsearM3U(data) {
+    function parse(data) {
         const lines = data.split('\n');
-        let tempName = "";
+        let current = null;
         for (let line of lines) {
             line = line.trim();
             if (line.startsWith('#EXTINF:')) {
-                tempName = line.split(',')[1] || "Sem nome";
-            } else if (line.startsWith('http')) {
-                canais.push({ name: tempName, url: line });
+                current = line.split(',')[1];
+            } else if (line.startsWith('http') && current) {
+                channels.push({ name: current, url: line });
+                current = null;
             }
         }
     }
 
-    // 3. Alternar telas
-    function toggleView(type) {
-        if (canais.length === 0) return alert("Lista ainda não carregada!");
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('player-screen').style.display = 'block';
-        renderizarCanais(canais);
+    function render(data) {
+        const container = document.getElementById('list');
+        container.innerHTML = data.map((c, index) => `
+            <div class="channel-item" onclick="play('${c.url}', '${c.name}', this)">
+                ${c.name}
+            </div>
+        `).join('');
     }
 
-    function renderizarCanais(lista) {
-        const container = document.getElementById('channel-list');
-        container.innerHTML = lista.map(c => 
-            `<div class="list-group-item" onclick="player('${c.url}', '${c.name.replace(/'/g, "")}')">${c.name}</div>`
-        ).join('');
-    }
+    function play(url, name, el) {
+        // Estética da lista
+        document.querySelectorAll('.channel-item').forEach(i => i.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('playing-now').innerText = "Assistindo: " + name;
 
-    // 4. Player de Vídeo
-    function player(url, name) {
-        document.getElementById('video-title').innerText = name;
+        // Lógica do Player
         if (Hls.isSupported()) {
-            hls.destroy(); // Limpa stream anterior
-            hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
@@ -134,19 +115,13 @@
         }
     }
 
-    function filterChannels() {
-        const p = document.getElementById('search').value.toLowerCase();
-        const filtrados = canais.filter(c => c.name.toLowerCase().includes(p));
-        renderizarCanais(filtrados);
+    function filter() {
+        const term = document.getElementById('search').value.toLowerCase();
+        const filtered = channels.filter(c => c.name.toLowerCase().includes(term));
+        render(filtered);
     }
 
-    function backToMenu() {
-        location.reload(); // Forma mais limpa de resetar o player
-    }
-
-    // Iniciar
-    carregarLista();
-    setInterval(() => { document.getElementById('timer').innerText = new Date().toLocaleTimeString(); }, 1000);
+    init();
 </script>
 
 </body>
