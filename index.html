@@ -3,181 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web IPTV Player</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/dist/bootstrap.min.css" rel="stylesheet">
+    <title>IPTV Player Premium</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
-        body {
-            background-color: #0d1117;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-        }
-        .header-info {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        body { background-color: #050a12; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        .container { max-width: 1200px; padding-top: 30px; }
+        
+        /* Estilo idêntico à imagem enviada */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .logo-area { font-weight: bold; font-size: 24px; color: #fff; }
+        
         .card-menu {
             border-radius: 15px;
-            height: 250px;
+            height: 280px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.3s;
-            border: none;
-            text-decoration: none;
-            color: white;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            margin-bottom: 20px;
         }
-        .card-menu:hover {
-            transform: scale(1.05);
-            color: #fff;
-        }
-        .bg-live { background: linear-gradient(135deg, #00b09b, #96c93d); }
-        .bg-movies { background: linear-gradient(135deg, #f80759, #bc4e9c); }
-        .bg-series { background: linear-gradient(135deg, #7b4397, #dc2430); }
+        .card-menu:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .card-menu h2 { font-weight: bold; margin-top: 15px; font-size: 1.5rem; }
         
-        #player-container {
-            display: none;
-            margin-top: 20px;
+        .bg-live { background: linear-gradient(180deg, #1fd1ad 0%, #2178ff 100%); }
+        .bg-movies { background: linear-gradient(180deg, #ff4b2b 0%, #ff416c 100%); }
+        .bg-series { background: linear-gradient(180deg, #a8c0ff 0%, #3f2b96 100%); }
+
+        #player-screen { display: none; }
+        video { width: 100%; border-radius: 10px; background: #000; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+        
+        .list-container { height: 500px; overflow-y: auto; background: #101827; border-radius: 10px; padding: 10px; }
+        .channel-item { 
+            padding: 12px; border-bottom: 1px solid #1f2937; cursor: pointer; transition: 0.2s;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
-        video {
-            width: 100%;
-            border-radius: 10px;
-            background: #000;
-        }
-        .channel-list {
-            max-height: 400px;
-            overflow-y: auto;
-            background: #161b22;
-            border-radius: 10px;
-        }
-        .list-group-item {
-            background: transparent;
-            color: white;
-            border-color: #30363d;
-            cursor: pointer;
-        }
-        .list-group-item:hover {
-            background: #21262d;
-        }
+        .channel-item:hover { background: #1f2937; color: #2178ff; }
+        
+        .loading { text-align: center; padding: 50px; font-size: 20px; color: #aaa; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-info">
-        <div>
-            <h2 class="mb-0">SMART PLAYER <span class="badge bg-primary">Web</span></h2>
-            <small id="current-date"></small>
-        </div>
-        <div class="text-end">
-            <input type="text" id="m3u-url" class="form-control form-control-sm mb-2" placeholder="URL da Lista .m3u">
-            <button onclick="loadPlaylist()" class="btn btn-sm btn-outline-light">Carregar Lista</button>
-        </div>
+    <div class="header">
+        <div class="logo-area">SMARTERS PLAYER <span style="font-weight: 300; font-size: 14px;">Lite</span></div>
+        <div id="clock" style="text-align: right; font-size: 18px;"></div>
     </div>
 
-    <div class="row g-4 mt-2" id="main-menu">
-        <div class="col-md-4">
-            <div class="card-menu bg-live" onclick="showCategory('Live')">
-                <h1 style="font-size: 4rem;">📺</h1>
-                <h3>LIVE TV</h3>
+    <div id="main-menu" class="row">
+        <div class="col-md-4" onclick="openCategory('LIVE')">
+            <div class="card-menu bg-live">
+                <img src="https://cdn-icons-png.flaticon.com/512/716/716429.png" width="80" style="filter: brightness(0) invert(1);">
+                <h2>LIVE TV</h2>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card-menu bg-movies" onclick="showCategory('Movies')">
-                <h1 style="font-size: 4rem;">🎬</h1>
-                <h3>MOVIES</h3>
+        <div class="col-md-4" onclick="openCategory('MOVIES')">
+            <div class="card-menu bg-movies">
+                <img src="https://cdn-icons-png.flaticon.com/512/4221/4221419.png" width="80" style="filter: brightness(0) invert(1);">
+                <h2>MOVIES</h2>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card-menu bg-series" onclick="showCategory('Series')">
-                <h1 style="font-size: 4rem;">🎞️</h1>
-                <h3>SERIES</h3>
+        <div class="col-md-4" onclick="openCategory('SERIES')">
+            <div class="card-menu bg-series">
+                <img src="https://cdn-icons-png.flaticon.com/512/3163/3163478.png" width="80" style="filter: brightness(0) invert(1);">
+                <h2>SERIES</h2>
             </div>
         </div>
+        <div id="status-load" class="text-center mt-3">Carregando lista IPTV...</div>
     </div>
 
-    <div id="player-container" class="row">
-        <div class="col-md-8">
-            <video id="video" controls></video>
-            <h4 id="now-playing" class="mt-2"></h4>
-            <button class="btn btn-secondary btn-sm" onclick="backToMenu()">⬅ Voltar ao Menu</button>
-        </div>
-        <div class="col-md-4">
-            <h5>Canais / Conteúdo</h5>
-            <div class="list-group channel-list" id="playlist-items">
-                </div>
+    <div id="player-screen">
+        <button class="btn btn-outline-light btn-sm mb-3" onclick="goBack()">⬅ Voltar ao Menu</button>
+        <div class="row">
+            <div class="col-md-8">
+                <video id="video-player" controls autoplay></video>
+                <h3 id="current-title" class="mt-3">Selecione um canal</h3>
+            </div>
+            <div class="col-md-4">
+                <div class="list-container" id="channel-list">
+                    </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Atualiza a data como na imagem
-    document.getElementById('current-date').innerText = new Date().toLocaleString();
+    // URL da sua lista fornecida
+    const M3U_URL = "https://cors-anywhere.herokuapp.com/http://iptvperfeito.ddns.net:25461/get.php?username=197388121&password=197388121&type=m3u_plus&output=ts";
 
-    let channels = [];
-    const video = document.getElementById('video');
-    const hls = new Hls();
+    let allChannels = [];
 
-    async function loadPlaylist() {
-        const url = document.getElementById('m3u-url').value;
-        if (!url) return alert("Insira a URL da lista!");
+    // Relógio
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString() + " | " + now.toLocaleDateString();
+    }, 1000);
 
+    // Carregar Lista Automaticamente ao abrir
+    async function fetchPlaylist() {
         try {
-            const response = await fetch(url);
+            const response = await fetch(M3U_URL);
             const data = await response.text();
             parseM3U(data);
-            alert("Lista carregada com sucesso!");
-        } catch (err) {
-            alert("Erro ao carregar lista. Verifique o CORS ou a URL.");
+            document.getElementById('status-load').innerHTML = "✅ Lista Carregada (" + allChannels.length + " itens)";
+        } catch (error) {
+            document.getElementById('status-load').innerHTML = "❌ Erro ao carregar lista (Verifique o CORS)";
+            console.error(error);
         }
     }
 
     function parseM3U(data) {
         const lines = data.split('\n');
-        channels = [];
-        let currentChannel = {};
+        let currentItem = {};
+        allChannels = [];
 
-        lines.forEach(line => {
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i].trim();
             if (line.startsWith('#EXTINF:')) {
-                const name = line.split(',')[1];
-                currentChannel = { name: name.trim() };
+                let info = line.split(',');
+                currentItem.name = info[info.length - 1];
             } else if (line.startsWith('http')) {
-                currentChannel.url = line.trim();
-                channels.push(currentChannel);
+                currentItem.url = line;
+                allChannels.push({...currentItem});
+                currentItem = {};
             }
-        });
+        }
     }
 
-    function showCategory(cat) {
-        if (channels.length === 0) {
-            alert("Carregue uma lista primeiro no canto superior direito!");
+    function openCategory(cat) {
+        if (allChannels.length === 0) {
+            alert("Aguarde o carregamento da lista ou verifique a conexão.");
             return;
         }
         document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('player-container').style.display = 'flex';
-        renderList();
-    }
-
-    function renderList() {
-        const listContainer = document.getElementById('playlist-items');
-        listContainer.innerHTML = '';
+        document.getElementById('player-screen').style.display = 'block';
         
-        channels.forEach(ch => {
-            const item = document.createElement('a');
-            item.className = 'list-group-item list-group-item-action';
-            item.innerText = ch.name;
-            item.onclick = () => playStream(ch.url, ch.name);
-            listContainer.appendChild(item);
+        const listDiv = document.getElementById('channel-list');
+        listDiv.innerHTML = '';
+
+        allChannels.forEach(ch => {
+            let div = document.createElement('div');
+            div.className = 'channel-item';
+            div.innerText = ch.name;
+            div.onclick = () => playVideo(ch.url, ch.name);
+            listDiv.appendChild(div);
         });
     }
 
-    function playStream(url, name) {
-        document.getElementById('now-playing').innerText = "Assistindo: " + name;
+    function playVideo(url, name) {
+        const video = document.getElementById('video-player');
+        document.getElementById('current-title').innerText = name;
+        
         if (Hls.isSupported()) {
+            const hls = new Hls();
             hls.loadSource(url);
             hls.attachMedia(video);
             hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
@@ -187,11 +169,14 @@
         }
     }
 
-    function backToMenu() {
+    function goBack() {
         document.getElementById('main-menu').style.display = 'flex';
-        document.getElementById('player-container').style.display = 'none';
-        video.pause();
+        document.getElementById('player-screen').style.display = 'none';
+        document.getElementById('video-player').pause();
     }
+
+    // Inicia a busca assim que abre
+    fetchPlaylist();
 </script>
 
 </body>
